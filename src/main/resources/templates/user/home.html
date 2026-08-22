@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{user/layout}">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>LaptopShop</title>
+</head>
+
+<body>
+	<!-- Header-->
+	<header class="bg-success py-5" layout:fragment="banner">
+		<div class="container px-4 px-lg-5 my-5">
+			<div class="text-center text-white">
+				<h1 class="display-4 fw-bolder">100% sản phẩm chính hãng</h1>
+				<p class="lead fw-normal text-white-50 mb-0">Hàng cao cấp, rẻ vô địch</p>
+			</div>
+		</div>
+	</header>
+	<!-- Section-->
+	<section class="py-5">
+		<div class="container px-4 px-lg-5 mt-5" layout:fragment="content">
+			<h3 class="mb-4">
+				Sản phẩm nổi bật
+			</h3>
+			<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+				<div class="col mb-5" th:each="product : ${products}">
+					<div class="card h-100 card-product">
+						<!-- Product image-->
+						<a th:href="@{/product/{id}(id=${product.id})}" class="redirect-product-detail">
+							<img class="card-img-top" th:src="${product.thumbnail}" />
+						</a>
+						<!-- Product details-->
+						<div class="card-body p-4">
+							<a th:href="@{/product/{id}(id=${product.id})}" class="redirect-product-detail">
+								<div class="text-center">
+									<h5 class="fw-bolder" th:text="${product.name}"></h5>
+									<span
+										th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA') + ' đ'}"></span>
+								</div>
+							</a>
+
+						</div>
+						<!-- Product actions-->
+						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+							<div class="text-center">
+								<button class="btn btn-outline-success mt-auto add-to-cart" th:data-product-id="${product.id}" th:data-quantity="1">
+									<i class="bi bi-cart-fill"></i> Add to cart
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+
+</html>

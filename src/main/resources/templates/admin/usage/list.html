@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Danh sách mục đích sử dụng</title>
+	<th:block layout:fragment="css">
+		<link th:href="@{/admin/css/user.css}" rel="stylesheet">
+	</th:block>
+</head>
+
+<body>
+	<main layout:fragment="content">
+		<!--begin::App Content Header-->
+		<div class="app-content-header">
+			<!--begin::Container-->
+			<div class="container-fluid">
+				<!--begin::Row-->
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Danh sách mục đích sử dụng</h1>
+					</div>
+					<div class="col-sm-6">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb float-sm-end">
+								<li class="breadcrumb-item"><a href="/admin">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Danh sách mục đích sử dụng</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end::Row-->
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content Header-->
+		<!--begin::App Content-->
+		<div class="app-content">
+			<!--begin::Container-->
+			<div class="container-fluid">
+				<div class="d-flex justify-content-between">
+					<form method="get" th:action="@{/admin/usage}" class="d-flex gap-2">
+						<div id="input-search">
+							<input type="text" class="form-control" id="search-user" name="keyword"
+								placeholder="Nhập tên mục đích sử dụng ..." th:value="${keyword}">
+						</div>
+						<button type="submit" class="btn btn-primary">Tìm kiếm</button>
+						<a th:href="@{/admin/usage}" type="button" class="btn btn-primary">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+								class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+								<path fill-rule="evenodd"
+									d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"></path>
+								<path
+									d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466">
+								</path>
+							</svg>
+							Làm mới
+						</a>
+
+					</form>
+					<a href="/admin/usage/create" class="btn btn-primary">Tạo mới</a>
+				</div>
+
+				<table class="table table-striped table-hover table-bordered mt-4">
+					<thead>
+						<tr>
+							<th scope="col">STT</th>
+							<th scope="col">Tên mục đích sử dụng</th>
+							<th scope="col">Trạng thái</th>
+							<th scope="col">Hành động</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:if="${usages != null and !usages.isEmpty()}">
+							<tr th:each="usage,status : ${usages}">
+								<th scope="row" th:text="${status.count}" />
+								<td th:text="${usage.name}" />
+								<td th:text="${usage.status.name() == 'active' ? 'Hoạt động' : 'Không hoạt động'}" />
+								<td class="d-flex gap-2">
+									<a th:href="@{/admin/usage/update/{id}(id=${usage.id})}"
+										class="btn btn-warning">Cập
+										nhật</a>
+									<button class="btn btn-danger " type="button" data-bs-toggle="modal"
+										th:data-id="${usage.id}" th:data-name="${usage.name}"
+										data-bs-target="#deleteModal">Xóa</button>
+								</td>
+							</tr>
+						</th:block>
+
+						<th:block th:unless="${usages != null and !usages.isEmpty()}">
+							<tr>
+								<td colspan="4" class="text-center">
+									Không có mục đích sử dụng nào
+								</td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+
+			</div>
+
+			<nav th:if="${usages.totalPages > 1}">
+				<ul class="pagination justify-content-center">
+					<li class="page-item" th:classappend="${usages.first} ? 'disabled'">
+						<a class="page-link" th:href="@{/admin/usage(
+						                    page=${usages.number - 1},
+						                    size=${usages.size},
+						                    keyword=${keyword}
+						               )}">Về trước</a>
+					</li>
+					<li class="page-item" th:each="i : ${#numbers.sequence(0, usages.totalPages - 1)}"
+						th:classappend="${i == usages.number} ? 'active'"><a class="page-link" th:href="@{/admin/usage(
+						                    page=${i},
+						                    size=${usages.size},
+						                    keyword=${keyword}
+						               )}" th:text="${i + 1}"></a></li>
+					<li class="page-item" th:classappend="${usages.last} ? 'disabled'">
+						<a class="page-link" th:href="@{/admin/usage(
+							                    page=${usages.number + 1},
+							                    size=${usages.size},
+							                    keyword=${keyword}
+							               )}">Tiếp theo</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<!--end::Container-->
+		</div>
+		<!--end::App Content-->
+	</main>
+
+	<th:block layout:fragment="scripts">
+		<script>
+			const deleteModalEl = document.getElementById('deleteModal');
+			const deleteFormEl = document.getElementById('deleteForm');
+			deleteModalEl.addEventListener('show.bs.modal', event => {
+				const modalEl = event.relatedTarget;
+				const usageId = modalEl.dataset.id;
+				const usageName = modalEl.dataset.name;
+				deleteModalEl.querySelector("#deleteModalLabel").textContent = "Xóa mục đích sử dụng";
+				deleteModalEl.querySelector(".modal-body").textContent = "Bạn có chắc chắn muốn xóa mục đích sử dụng " + usageName + " không ?";
+				deleteFormEl.action = `/admin/usage/delete/${usageId}`;
+			})
+		</script>
+
+		<script th:if="${successMessage != null or errorMessage != null}">
+			const myToastEl = document.getElementById('toast-common');
+			const myToast = bootstrap.Toast.getOrCreateInstance(myToastEl);
+			myToast.show();
+
+		</script>
+	</th:block>
+</body>
+
+</html>

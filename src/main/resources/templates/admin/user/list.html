@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Danh sách người dùng</title>
+	<th:block layout:fragment="css">
+		<link th:href="@{/admin/css/user.css}" rel="stylesheet">
+	</th:block>
+</head>
+
+<body>
+	<main layout:fragment="content">
+		<!--begin::App Content Header-->
+		<div class="app-content-header">
+			<!--begin::Container-->
+			<div class="container-fluid">
+				<!--begin::Row-->
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Danh sách người dùng</h1>
+					</div>
+					<div class="col-sm-6">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb float-sm-end">
+								<li class="breadcrumb-item"><a href="/admin">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Danh sách người dùng</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end::Row-->
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content Header-->
+		<!--begin::App Content-->
+		<div class="app-content">
+			<!--begin::Container-->
+			<div class="container-fluid">
+				<div class="d-flex justify-content-between">
+					<form method="get" th:action="@{/admin/users}" class="d-flex gap-2">
+						<div id="input-search">
+							<input type="text" class="form-control" id="search-user" name="keyword"
+								placeholder="Nhập email, tên người dùng, số điện thoại ..." th:value="${keyword}">
+						</div>
+						<button type="submit" class="btn btn-primary">Tìm kiếm</button>
+						<a th:href="@{/admin/users}" type="button" class="btn btn-primary">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+								class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+								<path fill-rule="evenodd"
+									d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"></path>
+								<path
+									d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466">
+								</path>
+							</svg>
+							Làm mới
+						</a>
+
+					</form>
+					<a href="/admin/users/create" class="btn btn-primary">Tạo mới</a>
+				</div>
+				<table class="table table-striped table-hover table-bordered mt-4">
+					<thead>
+						<tr>
+							<th scope="col">STT</th>
+							<th scope="col">Họ tên</th>
+							<th scope="col">Email</th>
+							<th scope="col">Số điện thoại</th>
+							<th scope="col">Vai trò</th>
+							<th scope="col">Hành động</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:if="${users != null and !users.isEmpty()}">
+							<tr th:each="user,status : ${users}">
+								<th scope="row" th:text="${status.count}" />
+								<td th:text="${user.name}" />
+								<td th:text="${user.email}" />
+								<td th:text="${user.phone}" />
+								<td th:text="${user.role.name}" />
+								<td class="d-flex gap-2">
+									<a th:href="@{/admin/users/{id}(id=${user.id})}" class="btn btn-success">Xem</a>
+									<a th:href="@{/admin/users/update/{id}(id=${user.id})}" class="btn btn-warning">Cập
+										nhật</a>
+									<button class="btn btn-danger " type="button" data-bs-toggle="modal"
+										th:data-id="${user.id}" th:data-name="${user.name}"
+										data-bs-target="#deleteModal">Xóa</button>
+								</td>
+							</tr>
+						</th:block>
+						<th:block th:unless="${users != null and !users.isEmpty()}">
+							<tr th:else>
+								<td colspan="6" class="text-center">
+									Không có người dùng nào
+								</td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+				<nav th:if="${users.totalPages > 1}">
+					<ul class="pagination justify-content-center">
+						<li class="page-item" th:classappend="${users.first} ? 'disabled'">
+							<a class="page-link" th:href="@{/admin/users(
+						                    page=${users.number - 1},
+						                    size=${users.size},
+						                    keyword=${keyword}
+						               )}">Về trước</a>
+						</li>
+						<li class="page-item" th:each="i : ${#numbers.sequence(0, users.totalPages - 1)}"
+							th:classappend="${i == users.number} ? 'active'"><a class="page-link" th:href="@{/admin/users(
+						                    page=${i},
+						                    size=${users.size},
+						                    keyword=${keyword}
+						               )}" th:text="${i + 1}"></a></li>
+						<li class="page-item" th:classappend="${users.last} ? 'disabled'">
+							<a class="page-link" th:href="@{/admin/users(
+							                    page=${users.number + 1},
+							                    size=${users.size},
+							                    keyword=${keyword}
+							               )}">Tiếp theo</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content-->
+	</main>
+
+	<th:block layout:fragment="scripts">
+		<script>
+			const deleteModalEl = document.getElementById('deleteModal');
+			const deleteFormEl = document.getElementById('deleteForm');
+			deleteModalEl.addEventListener('show.bs.modal', event => {
+				const modalEl = event.relatedTarget;
+				const userId = modalEl.dataset.id;
+				const userName = modalEl.dataset.name;
+				console.dir(modalEl)
+				deleteModalEl.querySelector("#deleteModalLabel").textContent = "Xóa người dùng";
+				deleteModalEl.querySelector(".modal-body").textContent = "Bạn có chắc chắn muốn xóa người dùng " + userName + " không ?";
+				deleteFormEl.action = `/admin/users/delete/${userId}`;
+			})
+		</script>
+
+		<script th:if="${successMessage != null or errorMessage != null}">
+			const myToastEl = document.getElementById('toast-common');
+			const myToast = bootstrap.Toast.getOrCreateInstance(myToastEl);
+			myToast.show();
+
+		</script>
+	</th:block>
+</body>
+
+</html>

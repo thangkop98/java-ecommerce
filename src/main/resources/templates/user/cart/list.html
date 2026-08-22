@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{user/layout}">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>Giỏ hàng - LaptopShop</title>
+</head>
+
+<body>
+	<!-- Section-->
+	<section class="py-5">
+		<div class="container px-4 px-lg-5 mt-5" layout:fragment="content">
+			<div class="row mb-5">
+				<div class="col-sm-6">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb float-sm-start">
+							<li class="breadcrumb-item"><a href="/"
+									style="text-decoration: none; color: #198754">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Chi tiết giỏ hàng</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+			<div class="row">
+				<table class="table" style="margin-bottom: 50px;">
+					<thead>
+						<tr>
+							<th scope="col">Sản phẩm</th>
+							<th scope="col">Tên</th>
+							<th scope="col">Giá</th>
+							<th scope="col">Số lượng</th>
+							<th scope="col">Thành tiền</th>
+							<th scope="col" class="text-center">Xóa sản phẩm</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="cartdetail : ${cartdetails}" th:data-cart-detail-id="${cartdetail.id}"
+							th:data-price="${cartdetail.product.price}">
+							<th scope="row">
+								<img th:src="@{${cartdetail.product.thumbnail}}" width="80" height="80">
+							</th>
+							<td th:text="${cartdetail.product.name}" class="align-middle"></td>
+							<td th:text="${#numbers.formatDecimal(cartdetail.product.price, 0, 'POINT', 0, 'COMMA') + ' đ'}"
+								class="align-middle">
+							</td>
+							<td class="align-middle">
+								<div class="d-flex align-items-center">
+									<button type="button" class="rounded-circle btn btn-outline-success"
+										onclick="decreaseQuantity(this)">
+										−
+									</button>
+									<span th:text="${cartdetail.quantity}" class="mx-2"
+										th:id="'cart-detail-'+ ${cartdetail.id}"></span>
+									<button type="button" class="rounded-circle btn btn-outline-success"
+										onclick="increaseQuantity(this)">
+										+
+									</button>
+								</div>
+							</td>
+							<td th:text="${#numbers.formatDecimal(cartdetail.product.price * cartdetail.quantity, 0, 'POINT', 0, 'COMMA') + ' đ'}"
+								class="align-middle" th:id="'subtotal-' + ${cartdetail.id}"></td>
+							<td class="align-middle text-center">
+								<i class="bi bi-x-circle fs-3" style="cursor: pointer; color: red;"
+									onclick="deleteCartDetail(this)"></i>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<th:block th:if="${cartdetails != null && !cartdetails.isEmpty()}">
+					<div class="col-md-8 d-flex flex-column rounded-3 py-3" style="background-color: #e9ecef;">
+						<h1>Thông tin đơn hàng</h1>
+						<hr>
+						<div class="d-flex justify-content-between"><span class="fw-bold">Tạm tính:</span> <span
+								id="temp-total"></span>
+						</div>
+						<div class="d-flex justify-content-between"><span class="fw-bold">Phí vận chuyển:</span> <span>0
+								đ</span></div>
+						<hr>
+						<div class="d-flex justify-content-between"><span class="fw-bold">Tổng số tiền:</span> <span
+								id="final-total">
+							</span> </div>
+						<hr>
+						<a th:href="@{/checkout}" style="width: 30%" class="py-2 rounded-5 btn btn-outline-success">Xác
+							nhận thanh
+							toán</a>
+					</div>
+				</th:block>
+				<th:block th:unless="${cartdetails != null && !cartdetails.isEmpty()}">
+					<div class="d-flex flex-column justify-content-center align-items-center gap-3">
+						<div>Chưa có sản phẩm nào trong giỏ hàng!</div>
+						<a th:href="@{/products}" class="btn btn-outline-success" style="width: 100px">Mua ngay</a>
+					</div>
+				</th:block>
+			</div>
+		</div>
+	</section>
+
+	<th:block layout:fragment="scripts">
+		<script>
+			function decreaseQuantity(button) {
+				const input = button.nextElementSibling;
+
+				if (input) {
+					const tr = input.closest("tr");
+					let quantity = parseInt(input.textContent);
+					if (quantity >= 1) {
+						quantity--;
+					}
+					input.textContent = quantity;
+					updateSubtotal(input);
+					calculcateTotalForConfirmPay();
+
+					// update db
+					if (tr) {
+						const cartDetailId = tr.dataset.cartDetailId;
+						fetch("/cart/update", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify({
+								cartDetailId: cartDetailId,
+								quantity: quantity
+							})
+						})
+					}
+
+				}
+
+			}
+
+			function increaseQuantity(button) {
+				const input = button.previousElementSibling;
+				if (input) {
+					const tr = input.closest("tr");
+					let quantity = parseInt(input.textContent);
+					quantity++;
+					input.textContent = quantity;
+					updateSubtotal(input);
+					calculcateTotalForConfirmPay();
+
+					if (tr) {
+						const cartDetailId = tr.dataset.cartDetailId;
+						fetch("/cart/update", {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify({
+								cartDetailId: cartDetailId,
+								quantity: quantity
+							})
+						})
+					}
+				}
+			}
+
+			function updateSubtotal(input) {
+				const tr = input.closest("tr");
+				if (tr) {
+					const price = tr.dataset.price;
+					const cartDetailId = tr.dataset.cartDetailId;
+					const subtotalEl = document.getElementById("subtotal-" + cartDetailId);
+					if (subtotalEl) {
+						const quantity = parseInt(input.textContent);
+						subtotalEl.textContent = formatCurrency(quantity * price) + " đ";
+					}
+				}
+			}
+
+			function formatCurrency(value) {
+				return new Intl.NumberFormat("vi-VN").format(value);
+			}
+
+			function calculcateTotalForConfirmPay() {
+				let total = 0;
+
+				document.querySelectorAll('[id^="subtotal-"]').forEach(element => {
+					const value = element.textContent
+						.replace(/[^\d]/g, "");
+
+					total += parseInt(value) || 0;
+				});
+
+				const tempTotal = document.getElementById("temp-total");
+				const finalTotal = document.getElementById("final-total");
+				const totalpay = formatCurrency(total) + " đ";
+				if (tempTotal) {
+					tempTotal.textContent = totalpay;
+				}
+
+				if (finalTotal) {
+					finalTotal.textContent = totalpay;
+				}
+			}
+
+			function deleteCartDetail(button) {
+				const tr = button.closest("tr");
+				const cartDetailId = tr.dataset.cartDetailId;
+
+				fetch(`/cart/remove/${cartDetailId}`, {
+					method: "DELETE"
+				})
+					.then(async response => {
+
+						const data = await response.json();
+
+						if (!response.ok) {
+							toastr.error(data.message);
+							return;
+						}
+
+						toastr.success(data.message);
+						tr.remove();
+
+						let totalProductInCart = parseInt(document.getElementById("cart-count").textContent);
+						if (totalProductInCart >= 1) {
+							totalProductInCart--;
+							document.getElementById("cart-count").textContent = totalProductInCart;
+						}
+						calculcateTotalForConfirmPay();
+					})
+					.catch(error => {
+						console.error(error);
+						toastr.error("Có lỗi xảy ra");
+					});
+			}
+
+			calculcateTotalForConfirmPay();
+		</script>
+
+		<script th:inline="javascript">
+			const errMessage = /*[[${noCartDetailMessage}]]*/ null;
+
+			if (errMessage) {
+				toastr.error(errMessage);
+			}
+		</script>
+	</th:block>
+</body>
+
+</html>

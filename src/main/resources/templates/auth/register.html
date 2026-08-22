@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Đăng ký</title>
+	<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+
+<body>
+	<section class="min-vh-100 px-4 py-5" style="background-color: #508bfc;">
+		<div class="row d-flex justify-content-center">
+			<div class="card col-md-6">
+				<h3 class="text-center mt-5">Đăng ký</h3>
+				<div class="card-body">
+					<form method="post" th:action="@{/register}" class="row" th:object="${user}">
+						<div class="form-outline mb-4 col-md-6">
+							<label class="form-label" for="email">Email</label>
+							<input type="email" id="email" class="form-control" name="email" th:field="*{email}"
+								th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" />
+							<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+								class="invalid-feedback"></span>
+						</div>
+
+						<div class="form-outline mb-4 col-md-6">
+							<label class="form-label" for="email">Họ tên</label>
+							<input type="text" id="email" class="form-control" name="name" th:field="*{name}"
+								th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''" />
+							<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+								class="invalid-feedback"></span>
+						</div>
+
+						<div class="form-outline mb-4 col-md-6">
+							<label class="form-label" for="phone">Số điện thoại</label>
+							<input type="text" id="phone" class="form-control" name="phone" th:field="*{phone}"
+								th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''" />
+							<span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
+								class="invalid-feedback"></span>
+						</div>
+
+						<div class="form-outline mb-4 col-md-6">
+							<label class="form-label" for="address">Địa chỉ</label>
+							<input type="text" id="address" class="form-control" name="address" th:field="*{address}" />
+						</div>
+
+						<div class="form-outline mb-4 col-md-6">
+							<label class="form-label" for="password">Mật khẩu</label>
+							<div style="position: relative;"
+								th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+								<input type="password" id="password" class="form-control" name="password"
+									th:field="*{password}"
+									th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''" />
+								<svg id="seePasswordIcon"
+									style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor:pointer"
+									xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-eye-fill" viewBox="0 0 16 16">
+									<path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+									<path
+										d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+								</svg>
+								<svg id="hidePasswordIcon"
+									style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor:pointer; display:none"
+									xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+									<path
+										d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z" />
+									<path
+										d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z" />
+								</svg>
+							</div>
+
+							<span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+								class="invalid-feedback"></span>
+						</div>
+
+						<div class="form-outline mb-4 col-md-6">
+							<label class="form-label" for="confirm_password">Nhập lại mật khẩu</label>
+							<div style="position: relative;"
+								th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''">
+								<input type="password" id="confirm_password" class="form-control"
+									name="confirm_password" th:field="*{confirmPassword}"
+									th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''" />
+								<svg id="seeConfirmPasswordIcon"
+									style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor:pointer"
+									xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-eye-fill" viewBox="0 0 16 16">
+									<path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+									<path
+										d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+								</svg>
+								<svg id="hideConfirmPasswordIcon"
+									style="position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor:pointer; display:none"
+									xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+									<path
+										d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z" />
+									<path
+										d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z" />
+								</svg>
+							</div>
+
+							<span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"
+								class="invalid-feedback"></span>
+						</div>
+						<!-- Submit button -->
+						<div class="col-12">
+							<button type="submit" data-mdb-button-init data-mdb-ripple-init
+								class="btn btn-primary btn-block mb-4 w-100">Đăng ký</button>
+						</div>
+
+
+						<!-- Register buttons -->
+						<div class="text-center">
+							<p>Đã có tài khoản? <a th:href="@{/login}" style="text-decoration: none;">Đăng nhập</a></p>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+	<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const seePassIcon = document.getElementById("seePasswordIcon");
+			const hidePassIcon = document.getElementById("hidePasswordIcon");
+			const inputPass = document.getElementById("password");
+
+			const seeConfirmPassIcon = document.getElementById("seeConfirmPasswordIcon");
+			const hideConfirmPassIcon = document.getElementById("hideConfirmPasswordIcon");
+			const inputConfirmPass = document.getElementById("confirm_password");
+			if (seePassIcon && hidePassIcon && inputPass) {
+				seePassIcon.addEventListener("click", function (e) {
+					inputPass.setAttribute("type", "text");
+					seePassIcon.style.display = "none";
+					hidePassIcon.style.display = "block";
+
+				})
+
+				hidePassIcon.addEventListener("click", function (e) {
+					inputPass.setAttribute("type", "password");
+					seePassIcon.style.display = "block";
+					hidePassIcon.style.display = "none";
+
+				})
+			}
+
+			if (seeConfirmPassIcon && hideConfirmPassIcon && inputConfirmPass) {
+				seeConfirmPassIcon.addEventListener("click", function (e) {
+					inputConfirmPass.setAttribute("type", "text");
+					seeConfirmPassIcon.style.display = "none";
+					hideConfirmPassIcon.style.display = "block";
+
+				})
+
+				hideConfirmPassIcon.addEventListener("click", function (e) {
+					inputConfirmPass.setAttribute("type", "password");
+					seeConfirmPassIcon.style.display = "block";
+					hideConfirmPassIcon.style.display = "none";
+
+				})
+			}
+		})
+	</script>
+</body>
+
+</html>

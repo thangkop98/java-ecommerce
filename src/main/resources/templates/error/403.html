@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{user/layout}">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>Forbidden</title>
+</head>
+
+<body>
+	<!-- Header-->
+	<header layout:fragment="banner">
+	</header>
+	<!-- Section-->
+	<section class="py-5">
+		<div class="container px-4 px-lg-5 mt-5" layout:fragment="content">
+			<div class="px-3 py-3 rounded-3 bg-danger text-white">Bạn không có quyền truy cập tài nguyên này!</div>
+		</div>
+	</section>
+</body>
+
+</html>

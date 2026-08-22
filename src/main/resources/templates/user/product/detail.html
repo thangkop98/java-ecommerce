@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{user/layout}">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>Chi tiết sản phẩm</title>
+</head>
+
+<body>
+	<!-- Section-->
+	<section class="py-5">
+		<div class="container px-4 px-lg-5 mt-5" layout:fragment="content">
+			<div class="row mb-5">
+				<div class="col-sm-6">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb float-sm-start">
+							<li class="breadcrumb-item"><a href="/" style="text-decoration: none; color: #198754">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-9">
+					<h1 th:text="${product.name}" class="fw-bold" style="font-size: 20px;"></h1>
+					<div class="row">
+						<div class="col-sm-6">
+							<img th:src="${product.thumbnail}" width="100%" height="100%">
+						</div>
+						<div class="col-sm-6 d-flex flex-column">
+							<p th:text="|Hãng sản xuất: ${product.brand.name}|"></p>
+							<p
+								th:text="|Giá bán: ${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA') + ' đ'}|">
+							</p>
+							<th:block th:if="${product.stock_quantity > 0}">
+								<div class="d-flex gap-2 align-items-center mb-5">
+									<span>Số lượng</span>
+									<div class="quantity-control">
+										<button type="button" class="quantity-btn" onclick="decreaseQuantity(this)">
+											−
+										</button>
+										<input type="number" value="1" min="1" class="quantity-input">
+										<button type="button" class="quantity-btn" onclick="increaseQuantity(this)">
+											+
+										</button>
+									</div>
+									<span th:if="${product.stock_quantity > 0}">Còn hàng</span>
+								</div>
+								<button class="btn btn-outline-success rounded-4 add-to-cart" style="width: 200px" th:data-product-id="${product.id}" th:data-quantity="1"> <i
+										class="bi bi-cart-fill"></i> Thêm vào giỏ hàng</button>
+							</th:block>
+							<th:block th:unless="${product.stock_quantity > 0}">
+								<span style="font-size:20px; color: red">Sản phẩm tạm thời hết hàng</span>
+								<span style="font-size:20px; color: red">Quý khách vui lòng quay lại sau!</span>
+							</th:block>
+						</div>
+					</div>
+					<div class="row">
+						<span style="border-bottom: 1px solid #f2d21d; font-size: 20px;" class="mb-3 fw-bold">Đặc điểm
+							nổi bật</span>
+						<p th:text="${product.description}"></p>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div style="font-size: 20px;" class="mb-3 fw-bold">Sản phẩm khác</div>
+					<div th:each="brand : ${brands}" class="d-flex justify-content-between mb-2">
+						<span th:text="${brand[1]}"></span>
+						<span th:text="|(${brand[2]})|"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<th:block layout:fragment="scripts">
+		<script>
+			const addToCartBtn = document.querySelector(".add-to-cart");
+			function decreaseQuantity(button) {
+				const input = button.nextElementSibling;
+
+				if (input.value > 1) {
+					input.value--;
+				}
+				
+				addToCartBtn.dataset.quantity = input.value;
+			}
+
+			function increaseQuantity(button) {
+				const input = button.previousElementSibling;
+				input.value++;
+				addToCartBtn.dataset.quantity = input.value;
+			}
+
+			const quantityInput = document.querySelector('.quantity-input');
+
+			quantityInput.addEventListener('change', function () {
+				const quantity = Number(this.value);
+
+				if (!Number.isInteger(quantity) || quantity < 1) {
+					this.value = 1;
+				}
+				
+				addToCartBtn.dataset.quantity = this.value;
+			});
+		</script>
+	</th:block>
+</body>
+
+</html>

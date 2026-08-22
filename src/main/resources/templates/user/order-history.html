@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{user/layout}">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>Lịch sử đơn hàng</title>
+</head>
+
+<body>
+	<!-- Header-->
+	<header layout:fragment="banner">
+	</header>
+	<!-- Section-->
+	<section class="py-5">
+		<div class="container px-4 px-lg-5 mt-5" layout:fragment="content">
+			<div class="row mb-5">
+				<div class="col-sm-6">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb float-sm-start">
+							<li class="breadcrumb-item"><a href="/"
+									style="text-decoration: none; color: #198754">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Lịch sử mua hàng</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="mb-5">Lịch sử mua hàng</h3>
+				<div class="d-flex flex-column gap-3 rounded-3 mb-5 p-3"
+					style="border: 1px solid #ccc; background-color: #e9ecef;" th:each="order : ${orders}">
+					<div class="d-flex justify-content-between">
+						<span th:text="|Mã đơn: #${order.code}|"></span>
+						<span th:text="|Ngày đặt: ${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}|"></span>
+						<span th:text="|Trạng thái: ${order.status.displayName}|"></span>
+						<span th:text="|Tổng tiền: ${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA') + ' đ'}|"></span>
+					</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th scope="col">Sản phẩm</th>
+								<th scope="col" class="text-center">Tên</th>
+								<th scope="col" class="text-center">Số lượng</th>
+								<th scope="col">Thành tiền</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="detail : ${order.orderDetails}">
+								<th scope="row">
+									<img th:src="@{${detail.product.thumbnail}}" width="80" height="80">
+								</th>
+								<td th:text="${detail.product.name}" class="align-middle text-center"></td>
+								<td class="align-middle text-center" th:text="|x${detail.quantity}|">
+								</td>
+								<td th:text="${#numbers.formatDecimal(detail.subtotal, 0, 'POINT', 0, 'COMMA') + ' đ'}"
+									class="align-middle"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+
+</html>

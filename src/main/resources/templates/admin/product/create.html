@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tạo mới sản phẩm</title>
+</head>
+
+<body>
+	<main layout:fragment="content">
+		<!--begin::App Content Header-->
+		<div class="app-content-header">
+			<!--begin::Container-->
+			<div class="container-fluid">
+				<!--begin::Row-->
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Tạo mới sản phẩm</h1>
+					</div>
+					<div class="col-sm-6">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb float-sm-end">
+								<li class="breadcrumb-item"><a href="/admin">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Tạo mới sản phẩm</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end::Row-->
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content Header-->
+		<!--begin::App Content-->
+		<div class="app-content">
+			<!--begin::Container-->
+			<div class="container-fluid d-flex justify-content-center">
+				<form class="row g-3 w-50" method="post" th:action="@{/admin/product/create}" th:object="${product}" enctype="multipart/form-data">
+					<div class="col-12">
+						<label for="name" class="form-label">Tên sản phẩm <span class="text-danger">(*)</span></label>
+						<input type="text" class="form-control" id="name" placeholder="Nhập tên sản phẩm ..."
+							th:field="*{name}" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+						<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></span>
+					</div>
+
+					<div class="col-md-6">
+						<label for="name" class="form-label">Giá sản phẩm <span class="text-danger">(*)</span></label>
+						<input type="number" class="form-control" id="price" placeholder="Nhập giá sản phẩm ..."
+							th:field="*{price}" th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''"
+							min="0">
+						<span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
+							class="invalid-feedback"></span>
+					</div>
+
+					<div class="col-md-6">
+						<label for="name" class="form-label">Số lượng trong kho <span class="text-danger">(*)</span></label>
+						<input type="number" class="form-control" id="stockQuantity" placeholder="Nhập số lượng ..."
+							th:field="*{stockQuantity}"
+							th:classappend="${#fields.hasErrors('stockQuantity')} ? 'is-invalid' : ''" min="0">
+						<span th:if="${#fields.hasErrors('stockQuantity')}" th:errors="*{stockQuantity}"
+							class="invalid-feedback"></span>
+					</div>
+
+					<div class="col-md-6">
+						<label for="name" class="form-label">Danh mục <span class="text-danger">(*)</span></label>
+						<select id="categoryId" class="form-select" th:field="*{categoryId}"
+							th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid' : ''">
+							<option selected value="">- Chọn danh mục - </option>
+							<option th:each="category : ${categories}" th:value="${category.id}"
+								th:text="${category.name}"></option>
+						</select>
+						<span th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"
+							class="invalid-feedback"></span>
+					</div>
+
+					<div class="col-md-6">
+						<label for="name" class="form-label">Hãng sản xuất <span class="text-danger">(*)</span></label>
+						<select id="brandId" class="form-select" th:field="*{brandId}"
+							th:classappend="${#fields.hasErrors('brandId')} ? 'is-invalid' : ''">
+							<option selected value="">- Chọn hãng sản xuất - </option>
+							<option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
+						</select>
+						<span th:if="${#fields.hasErrors('brandId')}" th:errors="*{brandId}"
+							class="invalid-feedback"></span>
+					</div>
+
+					<div class="col-12">
+						<label for="name" class="form-label">Mô tả sản phẩm</label>
+						<textarea class="form-control" id="description" placeholder="Nhập mô tả sản phẩm ..."
+							th:field="*{description}"
+							th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''" rows="4" />
+						<span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+							class="invalid-feedback"></span>
+					</div>
+
+					<div class="col-12">
+						<label for="name" class="form-label">Mục đích sử dụng</label>
+						<div class="row mb-3">
+							<div class="col-sm-3" th:each="usage : ${usages}">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox"
+										th:field="*{usageIds}" th:value="${usage.id}" th:id="'usage-' + ${usage.id}">
+									<label class="form-check-label" th:for="'usage-' + ${usage.id}"
+										th:text="${usage.name}">
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<label for="status" class="form-label">Trạng thái</label>
+						<select id="status" class="form-select" th:field="*{status}"
+							th:classappend="${#fields.hasErrors('status')} ? 'is-invalid' : ''">
+							<option selected value="active">Hoạt động</option>
+							<option value="inactive">Không hoạt động</option>
+						</select>
+						<span th:if="${#fields.hasErrors('status')}" th:errors="*{status}"
+							class="invalid-feedback"></span>
+					</div>
+					<div class="col-md-6">
+						<label for="thumbnail" class="form-label">Ảnh sản phẩm</label>
+						<input type="file" class="form-control" id="thumbnail" name="thumbnail"
+							accept="image/png, image/jpeg">
+					</div>
+					<div class="col-md-6"></div>
+					<div class="col-md-6">
+						<img id="imagePreview" src="#" alt="Image preview" style="display: none; width: 200px;
+											            height: 200px;
+											            border-radius: 8px;">
+					</div>
+					<div class="col-12">
+						<button type="submit" class="btn btn-primary">Thêm mới</button>
+					</div>
+				</form>
+
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content-->
+	</main>
+
+	<th:block layout:fragment="scripts">
+		<script>
+			const imageInput = document.getElementById('thumbnail');
+			const imagePreview = document.getElementById('imagePreview');
+
+			imageInput.addEventListener('change', function () {
+				const file = this.files[0];
+				console.log('file info', file)
+
+				if (file) {
+					imagePreview.src = URL.createObjectURL(file);
+					imagePreview.style.display = 'block';
+				} else {
+					imagePreview.src = '#';
+					imagePreview.style.display = 'none';
+				}
+			});
+		</script>
+	</th:block>
+</body>
+
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chi tiết đơn hàng</title>
+</head>
+
+<body>
+	<main layout:fragment="content">
+		<!--begin::App Content Header-->
+		<div class="app-content-header">
+			<!--begin::Container-->
+			<div class="container-fluid">
+				<!--begin::Row-->
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Chi tiết đơn hàng</h1>
+					</div>
+					<div class="col-sm-6">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb float-sm-end">
+								<li class="breadcrumb-item"><a href="/admin">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Chi tiết đơn hàng</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end::Row-->
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content Header-->
+		<!--begin::App Content-->
+		<div class="app-content">
+			<!--begin::Container-->
+			<div class="container-fluid d-flex justify-content-center">
+				<form class="row g-3 w-50" method="post" th:action="@{/admin/order/update/{id}(id=${order.id})}"
+					th:object="${order}">
+					<input type="hidden" th:field="*{id}">
+					<div class="row mb-4">
+						<div class="col-md-6">
+							<label for="code" class="form-label">Mã đơn hàng</label>
+							<input type="text" class="form-control" id="code" th:field="*{code}" readonly>
+						</div>
+						<div class="col-md-6">
+							<label for="date" class="form-label">Ngày đặt</label>
+							<input type="text" class="form-control" id="date" th:field="*{createdAt}" readonly>
+						</div>
+					</div>
+
+					<div class="row mb-4">
+						<div class="col-md-6 d-flex flex-column">
+							<label class="form-label">Thông tin khách hàng</label>
+							<div class="rounded-3 p-3" style="background-color: #ffffff; border: 1px solid #ccc">
+								<p>Họ tên: <span th:text="${user.name}"></span></p>
+								<p>Email: <span th:text="${user.email}"></span></p>
+								<p>SĐT: <span th:text="${user.phone}"></span></p>
+							</div>
+						</div>
+
+						<div class="col-md-6 d-flex flex-column">
+							<label class="form-label">Thông tin giao hàng</label>
+							<div class="rounded-3 p-3" style="background-color: #ffffff; border: 1px solid #ccc">
+								<p>Người nhận: <span th:text="${order.receiverName}"></span></p>
+								<p>SĐT: <span th:text="${order.receiverPhone}"></span></p>
+								<p>Địa chỉ: <span th:text="${order.receiverAddress}"></span></p>
+							</div>
+						</div>
+					</div>
+					<div class="row mb-4">
+						<div class="col d-flex flex-column">
+							<label class="form-label">Sản phẩm</label>
+							<div class="rounded-3 p-3" style="background-color: #ffffff; border: 1px solid #ccc">
+								<table class="table" style="margin-bottom: 50px;">
+									<thead>
+										<tr>
+											<th scope="col">Tên</th>
+											<th scope="col" class="text-center">Giá</th>
+											<th scope="col" class="text-center">Số lượng</th>
+											<th scope="col">Thành tiền</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="orderdetail : ${orderdetails}">
+											<td th:text="${orderdetail.product.name}" class="align-middle"></td>
+											<td th:text="${#numbers.formatDecimal(orderdetail.product.price, 0, 'POINT', 0, 'COMMA') + ' đ'}"
+												class="align-middle text-center">
+											</td>
+											<td class="align-middle text-center" th:text="${orderdetail.quantity}"></td>
+											<td th:text="${#numbers.formatDecimal(orderdetail.product.price * orderdetail.quantity, 0, 'POINT', 0, 'COMMA') + ' đ'}"
+												class="align-middle"></td>
+										</tr>
+									</tbody>
+								</table>
+
+								<div class="d-flex flex-column align-items-end">
+									<p>Tạm tính: <span
+											th:text="${#numbers.formatDecimal(total, 0, 'POINT', 0, 'COMMA') + ' đ'}"></span>
+									</p>
+									<p>Phí ship: 0d</p>
+									<p>Tổng: <span
+											th:text="${#numbers.formatDecimal(total, 0, 'POINT', 0, 'COMMA') + ' đ'}"></span>đ
+									</p>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="row mb-4">
+						<div class="col-md-6 d-flex flex-column">
+							<label class="form-label">Thông tin thanh toán</label>
+							<div class="rounded-3 p-3" style="background-color: #ffffff; border: 1px solid #ccc">
+								<p>Phương thức: COD</p>
+								<p>Trạng thái: Chưa thanh toán</p>
+							</div>
+						</div>
+
+						<div class="col-md-6 d-flex flex-column">
+							<label class="form-label">Trạng thái đơn hàng</label>
+							<select id="status" class="form-select" th:field="*{status}">
+								<option th:each="status : ${statuses}" th:value="${status}" th:text="${status.displayName}"
+									th:selected="order.status == status"></option>
+							</select>
+						</div>
+					</div>
+					<div class="col-12">
+						<button type="submit" class="btn btn-primary">Cập nhật</button>
+					</div>
+				</form>
+
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content-->
+	</main>
+
+	<th:block layout:fragment="scripts">
+		<script th:if="${successMessage != null or errorMessage != null}">
+			const myToastEl = document.getElementById('toast-common');
+			const myToast = bootstrap.Toast.getOrCreateInstance(myToastEl);
+			myToast.show();
+
+		</script>
+	</th:block>
+</body>
+
+</html>

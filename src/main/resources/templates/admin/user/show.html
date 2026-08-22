@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chi tiết người dùng</title>
+</head>
+
+<body>
+	<main layout:fragment="content">
+		<!--begin::App Content Header-->
+		<div class="app-content-header">
+			<!--begin::Container-->
+			<div class="container-fluid">
+				<!--begin::Row-->
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Chi tiết người dùng</h1>
+					</div>
+					<div class="col-sm-6">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb float-sm-end">
+								<li class="breadcrumb-item"><a href="/admin">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Chi tiết người dùng</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end::Row-->
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content Header-->
+		<!--begin::App Content-->
+		<div class="app-content">
+			<!--begin::Container-->
+			<div class="container-fluid d-flex justify-content-center">
+				<form class="row g-3 w-50" th:object="${user}" enctype="multipart/form-data">
+					<div class="col-md-6">
+						<label for="email" class="form-label">Email</label>
+						<input type="email" class="form-control" id="email" th:field="*{email}" readonly>
+					</div>
+					<div class="col-md-6">
+						<label for="phone" class="form-label">Số điện thoại</label>
+						<input type="text" class="form-control" id="phone" th:field="*{phone}" readonly>
+					</div>
+					<div class="col-md-6">
+						<label for="fullName" class="form-label">Họ và tên</label>
+						<input type="text" class="form-control" id="fullName" th:field="*{name}" readonly>
+					</div>
+					<div class="col-md-6">
+						<label for="role" class="form-label">Vai trò</label>
+						<input type="text" class="form-control" id="role" th:value="${user.role.name}" readonly>
+					</div>
+					<div class="col-12">
+						<label for="address" class="form-label">Địa chỉ</label>
+						<input type="text" class="form-control" id="address" th:field="*{address}" readonly>
+					</div>
+					<div class="col-md-6 d-flex flex-column">
+						<label for="avatar" class="form-label">Ảnh đại diện</label>
+						<img id="imagePreview" src="#" alt="Image preview" style="width: 200px;
+												            height: 200px;
+												            border-radius: 8px;" th:if="${user.avatar != null}" th:src="${user.avatar}">
+					</div>
+				</form>
+
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content-->
+	</main>
+
+</body>
+
+</html>

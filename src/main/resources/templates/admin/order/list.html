@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Danh sách đơn hàng</title>
+	<th:block layout:fragment="css">
+		<link th:href="@{/admin/css/user.css}" rel="stylesheet">
+	</th:block>
+</head>
+
+<body>
+	<main layout:fragment="content">
+		<!--begin::App Content Header-->
+		<div class="app-content-header">
+			<!--begin::Container-->
+			<div class="container-fluid">
+				<!--begin::Row-->
+				<div class="row">
+					<div class="col-sm-6">
+						<h1 class="mb-0 fs-3">Danh sách đơn hàng</h1>
+					</div>
+					<div class="col-sm-6">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb float-sm-end">
+								<li class="breadcrumb-item"><a href="/admin">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Danh sách đơn hàng</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end::Row-->
+			</div>
+			<!--end::Container-->
+		</div>
+		<!--end::App Content Header-->
+		<!--begin::App Content-->
+		<div class="app-content">
+			<!--begin::Container-->
+			<div class="container-fluid">
+				<div class="d-flex justify-content-between">
+					<form method="get" th:action="@{/admin/order}" class="d-flex flex-column gap-3">
+						<div class="d-flex flex-wrap gap-2">
+							<div>
+								<label>Mã đơn hàng:</label>
+								<input type="text" class="form-control" id="search-code" name="code"
+									placeholder="Nhập mã đơn hàng ..." th:value="${code}">
+							</div>
+							<div>
+								<label>Tên khách hàng:</label>
+								<input type="text" class="form-control" id="search-name" name="name"
+									placeholder="Nhập tên khách hàng ..." th:value="${name}">
+							</div>
+							<div>
+								<label>Số điện thoại:</label>
+								<input type="text" class="form-control" id="search-phone" name="phone"
+									placeholder="Nhập SĐT ..." th:value="${phone}">
+							</div>
+							<div>
+								<label>Trạng thái</label>
+								<select class="form-select" name="status">
+									<option selected value="">- Chọn trạng thái -</option>
+									<option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}" th:selected="${s.toString() == status}">
+									</option>
+								</select>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<label>Từ ngày:</label>
+									<input type="date" class="form-control" name="fromDate" aria-label="Từ ngày" th:value="${fromDate}">
+								</div>
+
+								<div class="col-md-6">
+									<label>Đến ngày:</label>
+									<input type="date" class="form-control" name="toDate" aria-label="Đến ngày" th:value="${toDate}">
+								</div>
+							</div>
+						</div>
+						<div class="d-flex gap-2">
+							<button type="submit" class="btn btn-primary">Tìm kiếm</button>
+							<a th:href="@{/admin/order}" type="button" class="btn btn-primary">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+									class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+									<path fill-rule="evenodd"
+										d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"></path>
+									<path
+										d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466">
+									</path>
+								</svg>
+								Làm mới
+							</a>
+						</div>
+
+
+					</form>
+				</div>
+
+				<table class="table table-striped table-hover table-bordered mt-4">
+					<thead>
+						<tr>
+							<th scope="col">STT</th>
+							<th scope="col">Mã đơn hàng</th>
+							<th scope="col">Người đặt</th>
+							<th scope="col">SĐT</th>
+							<th scope="col">Ngày đặt</th>
+							<th scope="col">Tổng tiền</th>
+							<th scope="col">Trạng thái</th>
+							<th scope="col">Hành động</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:if="${orders != null and !orders.isEmpty()}">
+							<tr th:each="order,status : ${orders}">
+								<th scope="row" th:text="${status.count}" />
+								<td th:text="${order.code}"></td>
+								<td th:text="${order.receiverName}"></td>
+								<td th:text="${order.receiverPhone}"></td>
+								<td th:text="${#temporals.format(order.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+								<td
+									th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA') + ' ₫'}">
+								</td>
+								<td th:text="${order.status.displayName}"></td>
+								<td>
+									<a th:href="@{/admin/order/view/{id}(id=${order.id})}" class="btn btn-success">Xem</a>
+								</td>
+							</tr>
+						</th:block>
+
+						<th:block th:unless="${orders != null and !orders.isEmpty()}">
+							<tr>
+								<td colspan="9" class="text-center">
+									Không có đơn hàng nào
+								</td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+
+			</div>
+
+			<nav th:if="${orders.totalPages > 1}">
+				<ul class="pagination justify-content-center">
+					<li class="page-item" th:classappend="${orders.first} ? 'disabled'">
+						<a class="page-link" th:href="@{/admin/order(
+						                    page=${orders.number - 1},
+						                    size=${orders.size},
+											code=${code},
+											name=${name},
+											phone=${phone},
+											status=${status},
+											fromDate=${fromDate},
+											toDate=${toDate}
+						               )}">Về trước</a>
+					</li>
+					<li class="page-item" th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}"
+						th:classappend="${i == orders.number} ? 'active'"><a class="page-link" th:href="@{/admin/order(
+						                    page=${i},
+						                    size=${orders.size},
+											code=${code},
+											name=${name},
+											phone=${phone},
+											status=${status},
+											fromDate=${fromDate},
+											toDate=${toDate}											
+						               )}" th:text="${i + 1}"></a></li>
+					<li class="page-item" th:classappend="${orders.last} ? 'disabled'">
+						<a class="page-link" th:href="@{/admin/order(
+							                    page=${orders.number + 1},
+							                    size=${orders.size},
+												code=${code},
+												name=${name},
+												phone=${phone},
+												status=${status},
+												fromDate=${fromDate},
+												toDate=${toDate}
+							               )}">Tiếp theo</a>
+					</li>
+				</ul>
+			</nav>
+
+		</div>
+		<!--end::Container-->
+		</div>
+		<!--end::App Content-->
+	</main>
+
+	<th:block layout:fragment="scripts">
+
+		<script th:if="${successMessage != null or errorMessage != null}">
+			const myToastEl = document.getElementById('toast-common');
+			const myToast = bootstrap.Toast.getOrCreateInstance(myToastEl);
+			myToast.show();
+
+		</script>
+	</th:block>
+</body>
+
+</html>

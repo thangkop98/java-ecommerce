@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{user/layout}">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>Tài khoản</title>
+</head>
+
+<body>
+	<!-- Header-->
+	<header layout:fragment="banner">
+	</header>
+	<!-- Section-->
+	<section class="py-5">
+		<div class="container px-4 px-lg-5 mt-5" layout:fragment="content">
+			<div class="row mb-5">
+				<div class="col-sm-6">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb float-sm-start">
+							<li class="breadcrumb-item"><a href="/"
+									style="text-decoration: none; color: #198754">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Quản lý tài khoản</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+			<div class="row">
+				<form class="row g-3" style="width: 50%; margin: 0 auto" th:object="${user}" method="post"
+					th:action="@{/manage-user}" enctype="multipart/form-data">
+					<input type="hidden" th:field="*{id}" />
+					<h3 class="text-center">Thông tin tài khoản</h3>
+					<div class="col-md-6">
+						<label for="name" class="form-label">Họ tên</label>
+						<input type="text" class="form-control" id="name" th:field="*{name}"
+							th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+						<span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="invalid-feedback"></span>
+					</div>
+					<div class="col-md-6">
+						<label for="email" class="form-label">Email</label>
+						<input type="email" class="form-control" id="email" th:field="*{email}"
+							th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+						<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+							class="invalid-feedback"></span>
+					</div>
+					<div class="col-md-6">
+						<label for="phone" class="form-label">Số điện thoại</label>
+						<input type="text" class="form-control" id="phone" th:field="*{phone}"
+							th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''">
+						<span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
+							class="invalid-feedback"></span>
+					</div>
+					<div class="col-md-6">
+						<label for="avatar" class="form-label">Ảnh đại diện</label>
+						<input type="file" class="form-control" id="avatar" name="image" accept="image/png, image/jpeg">
+					</div>
+					<div class="col-md-6"></div>
+					<div class="col-md-6">
+						<img id="imagePreview" src="#" alt="Image preview" style="width: 200px;
+											            height: 200px;
+											            border-radius: 8px;" th:src="${user.avatar}">
+					</div>
+
+					<div class="col-12">
+						<button type="submit" class="btn btn-primary">Cập nhật</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+
+	<th:block layout:fragment="scripts">
+		<script>
+			const imageInput = document.getElementById('avatar');
+			console.log('imageInput', imageInput)
+			const imagePreview = document.getElementById('imagePreview');
+
+			imageInput.addEventListener('change', function () {
+				const file = this.files[0];
+				console.log('file info', file)
+
+				if (file) {
+					imagePreview.src = URL.createObjectURL(file);
+					imagePreview.style.display = 'block';
+				} else {
+					imagePreview.src = '#';
+					imagePreview.style.display = 'none';
+				}
+			});
+		</script>
+
+		<script th:inline="javascript">
+			const successMessage = /*[[${updateAccountSuccess}]]*/ null;
+
+			if (successMessage) {
+				toastr.success(successMessage);
+			}
+		</script>
+	</th:block>
+</body>
+
+</html>

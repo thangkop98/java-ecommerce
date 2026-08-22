@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{user/layout}">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>Sản phẩm - LaptopShop</title>
+</head>
+
+<body>
+	<!-- Section-->
+	<section class="py-5">
+		<div class="container px-4 px-lg-5 mt-5" layout:fragment="content">
+			<div class="row mb-5">
+				<div class="col-sm-6">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb float-sm-start">
+							<li class="breadcrumb-item"><a href="/"
+									style="text-decoration: none; color: #198754">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Danh sách sản phẩm</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<form th:action="@{/products}" method="get">
+						<!-- Hãng sản xuất -->
+						<div class="mb-4">
+							<h6 class="fw-bold mb-3">Hãng sản xuất</h6>
+
+							<div class="d-flex flex-wrap gap-2">
+								<div class="form-check" th:each="brand : ${brands}">
+									<input class="form-check-input" type="checkbox" name="brandIds"
+										th:value="${brand.id}" th:id="'brand-' + ${brand.id}">
+
+									<label class="form-check-label" th:for="'brand-' + ${brand.id}"
+										th:text="${brand.name}">
+									</label>
+								</div>
+							</div>
+						</div>
+
+						<!-- Mục đích sử dụng -->
+						<div class="mb-4">
+							<h6 class="fw-bold mb-3">Mục đích sử dụng</h6>
+							<div class="d-flex flex-wrap gap-2">
+								<div class="form-check" th:each="usage : ${usages}">
+									<input class="form-check-input" type="checkbox" name="usageIds"
+										th:value="${usage.id}" th:id="'usage-' + ${usage.id}">
+									<label class="form-check-label" th:for="'usage-' + ${usage.id}"
+										th:text="${usage.name}">
+									</label>
+								</div>
+							</div>
+						</div>
+
+
+						<!-- Mức giá -->
+						<div class="mb-4">
+							<h6 class="fw-bold mb-3">Mức giá</h6>
+							<div class="d-flex flex-column gap-2">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="price" value="under10"
+										id="price1">
+									<label class="form-check-label" for="price1">
+										Dưới 10 triệu
+									</label>
+								</div>
+
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="price" value="10-15" id="price2">
+									<label class="form-check-label" for="price2">
+										Từ 10 - 15 triệu
+									</label>
+								</div>
+
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="price" value="15-20" id="price3">
+									<label class="form-check-label" for="price3">
+										Từ 15 - 20 triệu
+									</label>
+								</div>
+
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="price" value="over20"
+										id="price4">
+									<label class="form-check-label" for="price4">
+										Trên 20 triệu
+									</label>
+								</div>
+
+							</div>
+						</div>
+
+
+						<!-- Sắp xếp -->
+						<div class="mb-4">
+							<h6 class="fw-bold mb-3">Sắp xếp</h6>
+							<div class="d-flex flex-column gap-2">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="sort" value="price_asc"
+										id="sort1">
+									<label class="form-check-label" for="sort1">
+										Giá tăng dần
+									</label>
+								</div>
+
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="sort" value="price_desc"
+										id="sort2">
+									<label class="form-check-label" for="sort2">
+										Giá giảm dần
+									</label>
+								</div>
+
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="sort" value="default" id="sort3"
+										checked>
+									<label class="form-check-label" for="sort3">
+										Không sắp xếp
+									</label>
+								</div>
+
+							</div>
+						</div>
+
+
+						<!-- Button -->
+						<button type="submit" class="w-50 rounded-5 btn btn-outline-success" style="height: 50px">
+							Lọc sản phẩm
+						</button>
+
+					</form>
+				</div>
+				<div class="col-sm-8">
+					<th:block th:if="${products != null && !products.isEmpty()}">
+						<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 justify-content-center">
+							<div class="col mb-5" th:each="product : ${products}">
+								<div class="card h-100 card-product">
+									<!-- Product image-->
+									<a th:href="@{/product/{id}(id=${product.id})}" class="redirect-product-detail">
+										<img class="card-img-top" th:src="${product.thumbnail}" />
+									</a>
+									<!-- Product details-->
+									<div class="card-body p-4">
+										<a th:href="@{/product/{id}(id=${product.id})}" class="redirect-product-detail">
+											<div class="text-center">
+												<h5 class="fw-bolder" th:text="${product.name}"></h5>
+												<span
+													th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA') + ' đ'}"></span>
+											</div>
+										</a>
+
+									</div>
+									<!-- Product actions-->
+									<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+										<div class="text-center"><a class="btn btn-outline-success mt-auto add-to-cart" href="#" th:data-product-id="${product.id}" th:data-quantity="1"><i
+													class="bi bi-cart-fill"></i> Add to cart</a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</th:block>
+					<th:block th:unless="${products != null && !products.isEmpty()}">
+						<div class="text-danger fw-bold text-center" style="font-size: 24px;">Không tìm thấy sản phẩm
+							nào</div>
+					</th:block>
+					<nav th:if="${products.totalPages > 1}">
+						<ul class="pagination justify-content-center">
+							<li class="page-item" th:classappend="${products.first} ? 'disabled'">
+								<a class="page-link" th:href="@{/products(
+											                    page=${products.number - 1},
+											                    size=${products.size},
+											                    
+											               )}">Về trước</a>
+							</li>
+							<li class="page-item" th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}"
+								th:classappend="${i == products.number} ? 'active'"><a class="page-link" th:href="@{/products(
+											                    page=${i},
+											                    size=${products.size},
+											                    
+											               )}" th:text="${i + 1}"></a></li>
+							<li class="page-item" th:classappend="${products.last} ? 'disabled'">
+								<a class="page-link" th:href="@{/products(
+												                    page=${products.number + 1},
+												                    size=${products.size},
+												                    
+												               )}">Tiếp theo</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<th:block layout:fragment="scripts">
+		<script>
+
+		</script>
+	</th:block>
+</body>
+
+</html>
