@@ -90,6 +90,7 @@ Trước khi chạy dự án, đảm bảo những phần mềm sau được cà
 - Git
 - IDE: Cài 1 trong các tool sau Spring tool suite/VS code/IntelliJ IDEA/Eclipse, ...
 - Tool quản lý cơ sở dữ liệu: Có thể tạo database bằng command line hoặc cài 1 trong các tool sau Navicat/MySQL Workbench/DBeaver, ...
+
 Không cần cài đặt Maven toàn cục vì dự án đã bao gồm Maven Wrapper.
 
 ## 6. Hướng dẫn cài đặt và chạy dự án
