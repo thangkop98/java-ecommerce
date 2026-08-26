@@ -98,7 +98,7 @@ Không cần cài đặt Maven toàn cục vì dự án đã bao gồm Maven Wra
 - Mở terminal, di chuyển vào thư mục bạn muốn cài dự án, chạy lệnh: git clone https://github.com/thangkop98/java-ecommerce.git
 
 ### 6.2. Mở dự án
-- chạy lệnh: cd java-ecommerce
+- Dùng IDE để mở dự án từ thư mục cài đặt.
 
 ### 6.3. Cấu hình kết nối tới database
 Ứng dụng sử dụng MySQL với thông tin kết nối mặc định:
