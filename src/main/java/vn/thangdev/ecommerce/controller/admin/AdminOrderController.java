@@ -92,7 +92,7 @@ public class AdminOrderController {
 			RedirectAttributes redirect) {
 		Order order = this.orderService.getDetailOrder(id).orElseThrow(
 				() -> new ResourceNotFoundException(404, "Không tìm thấy đơn hàng", "redirect:/admin/order"));
-		if (!order.getStatus().canTransitionTo(newStatus)) {
+		if (!order.getStatus().equals(newStatus) &&!order.getStatus().canTransitionTo(newStatus)) {
 			redirect.addFlashAttribute("errorMessage", "Không thể chuyển trạng thái từ "
 					+ order.getStatus().getDisplayName() + " thành " + newStatus.getDisplayName());
 			return "redirect:/admin/order/view/" + id;

@@ -16,13 +16,10 @@ public enum OrderStatus {
 
 	public boolean canTransitionTo(OrderStatus next) {
 		return switch (this) {
-		case pending -> next == confirm || next == cancelled;
-
-		case confirm -> next == shipping || next == cancelled;
-
-		case shipping -> next == delivered;
-
-		case delivered, cancelled -> false;
+			case pending -> next == confirm || next == cancelled;
+			case confirm -> next == shipping || next == cancelled;
+			case shipping -> next == delivered;
+			case delivered, cancelled -> false;
 		};
 	}
 }
