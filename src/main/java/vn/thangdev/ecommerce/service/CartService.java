@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.model.Cart;
 import vn.thangdev.ecommerce.model.CartDetail;
 import vn.thangdev.ecommerce.model.Product;
@@ -14,17 +15,11 @@ import vn.thangdev.ecommerce.repository.CartRepository;
 import vn.thangdev.ecommerce.repository.ProductRepository;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
 	private final CartRepository cartRepository;
 	private final ProductRepository productRepository;
 	private final CartDetailRepository cartDetailRepository;
-
-	public CartService(CartRepository cartRepository, ProductRepository productRepository,
-			CartDetailRepository cartDetailRepository) {
-		this.cartRepository = cartRepository;
-		this.productRepository = productRepository;
-		this.cartDetailRepository = cartDetailRepository;
-	}
 
 	@Transactional
 	public int addToCart(User user, Long productId, int quantity) {

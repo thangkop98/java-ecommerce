@@ -5,19 +5,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.model.User;
 import vn.thangdev.ecommerce.repository.CartDetailRepository;
 import vn.thangdev.ecommerce.repository.UserRepository;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class GlobalController {
 	private final UserRepository userRepository;
 	private final CartDetailRepository cartDetailRepository;
-
-	public GlobalController(UserRepository userRepository, CartDetailRepository cartDetailRepository) {
-		this.userRepository = userRepository;
-		this.cartDetailRepository = cartDetailRepository;
-	}
 
 	@ModelAttribute
 	public void addCurrentUser(Model model, Authentication authentication) {

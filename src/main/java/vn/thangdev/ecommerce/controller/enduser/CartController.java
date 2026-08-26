@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.dto.AddCartRequestDTO;
 import vn.thangdev.ecommerce.dto.CreateOrderRequestDTO;
 import vn.thangdev.ecommerce.dto.UpdateCartDetailRequestDTO;
@@ -27,16 +28,11 @@ import vn.thangdev.ecommerce.service.CartDetailService;
 import vn.thangdev.ecommerce.service.CartService;
 
 @Controller
+@RequiredArgsConstructor
 public class CartController {
 	private final CartService cartService;
 	private final CartDetailService cartDetailService;
 	private final UserRepository userRepository;
-
-	public CartController(CartService cartService, UserRepository userRepository, CartDetailService cartDetailService) {
-		this.cartService = cartService;
-		this.cartDetailService = cartDetailService;
-		this.userRepository = userRepository;
-	}
 
 	@GetMapping("/cart")
 	public String cartDetails(Authentication authentication, Model model) {

@@ -30,37 +30,46 @@
 			</div>
 			<div class="row">
 				<h3 class="mb-5">Lịch sử mua hàng</h3>
-				<div class="d-flex flex-column gap-3 rounded-3 mb-5 p-3"
-					style="border: 1px solid #ccc; background-color: #e9ecef;" th:each="order : ${orders}">
-					<div class="d-flex justify-content-between">
-						<span th:text="|Mã đơn: #${order.code}|"></span>
-						<span th:text="|Ngày đặt: ${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}|"></span>
-						<span th:text="|Trạng thái: ${order.status.displayName}|"></span>
-						<span th:text="|Tổng tiền: ${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA') + ' đ'}|"></span>
+				<th:block th:if="${orders != null && !orders.isEmpty()}">
+					<div class="d-flex flex-column gap-3 rounded-3 mb-5 p-3"
+						style="border: 1px solid #ccc; background-color: #e9ecef;" th:each="order : ${orders}">
+						<div class="d-flex justify-content-between">
+							<span th:text="|Mã đơn: #${order.code}|"></span>
+							<span th:text="|Ngày đặt: ${#temporals.format(order.createdAt, 'dd/MM/yyyy HH:mm')}|"></span>
+							<span th:text="|Trạng thái: ${order.status.displayName}|"></span>
+							<span th:text="|Tổng tiền: ${#numbers.formatDecimal(order.totalAmount, 0, 'POINT', 0, 'COMMA') + ' đ'}|"></span>
+						</div>
+						<table class="table">
+							<thead>
+								<tr>
+									<th scope="col">Sản phẩm</th>
+									<th scope="col" class="text-center">Tên</th>
+									<th scope="col" class="text-center">Số lượng</th>
+									<th scope="col">Thành tiền</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="detail : ${order.orderDetails}">
+									<th scope="row">
+										<img th:src="${detail.product.thumbnail}" width="80" height="80">
+									</th>
+									<td th:text="${detail.product.name}" class="align-middle text-center"></td>
+									<td class="align-middle text-center" th:text="|x${detail.quantity}|">
+									</td>
+									<td th:text="${#numbers.formatDecimal(detail.subtotal, 0, 'POINT', 0, 'COMMA') + ' đ'}"
+										class="align-middle"></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-					<table class="table">
-						<thead>
-							<tr>
-								<th scope="col">Sản phẩm</th>
-								<th scope="col" class="text-center">Tên</th>
-								<th scope="col" class="text-center">Số lượng</th>
-								<th scope="col">Thành tiền</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="detail : ${order.orderDetails}">
-								<th scope="row">
-									<img th:src="@{${detail.product.thumbnail}}" width="80" height="80">
-								</th>
-								<td th:text="${detail.product.name}" class="align-middle text-center"></td>
-								<td class="align-middle text-center" th:text="|x${detail.quantity}|">
-								</td>
-								<td th:text="${#numbers.formatDecimal(detail.subtotal, 0, 'POINT', 0, 'COMMA') + ' đ'}"
-									class="align-middle"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+				</th:block>
+				<th:block th:unless="${orders != null && !orders.isEmpty()}">
+					<div class="d-flex flex-column justify-content-center align-items-center gap-3">
+						<div>Chưa có đơn hàng nào!</div>
+						<a th:href="@{/products}" class="btn btn-outline-success" style="width: 100px">Mua ngay</a>
+					</div>
+				</th:block>
+
 			</div>
 		</div>
 	</section>

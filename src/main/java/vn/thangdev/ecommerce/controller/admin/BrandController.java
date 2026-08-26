@@ -4,26 +4,33 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.exception.ResourceNotFoundException;
 import vn.thangdev.ecommerce.model.Brand;
 import vn.thangdev.ecommerce.service.BrandService;
 
 @Controller
 @RequestMapping("/admin/brand")
+@RequiredArgsConstructor
 public class BrandController {
 	private final BrandService brandService;
 
-	public BrandController(BrandService brandService) {
-		this.brandService = brandService;
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public String handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
+			RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("errorMessage", "Id không đúng định dạng, vui lòng kiểm tra lại!");
+		return "redirect:/admin/brand";
 	}
 
 	@GetMapping
@@ -43,6 +50,10 @@ public class BrandController {
 	@PostMapping("/create")
 	public String postCreateBrand(@Valid @ModelAttribute("brand") Brand data, BindingResult bindingResult, Model model,
 			RedirectAttributes redirectAttributes) {
+		if (this.brandService.checkExistedName(data.getName())) {
+			bindingResult.rejectValue("name", "name.exists", "Tên hãng sản xuất đã tồn tại");
+		}
+
 		if (bindingResult.hasErrors()) {
 			return "/admin/brand/create";
 		}

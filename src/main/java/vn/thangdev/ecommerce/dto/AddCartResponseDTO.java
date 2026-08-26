@@ -1,28 +1,16 @@
 package vn.thangdev.ecommerce.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AddCartResponseDTO {
 	private boolean success;
 	private int cartCount;
 	private String message;
-
-	public AddCartResponseDTO() {
-	}
-
-	public AddCartResponseDTO(boolean success, int cartCount, String message) {
-		this.success = success;
-		this.cartCount = cartCount;
-		this.message = message;
-	}
-
-	public boolean isSuccess() {
-		return success;
-	}
-
-	public int getCartCount() {
-		return cartCount;
-	}
-
-	public String getMessage() {
-		return message;
-	}
 }

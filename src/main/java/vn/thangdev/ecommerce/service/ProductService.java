@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.constant.CommonStatus;
 import vn.thangdev.ecommerce.dto.CreateProductDTO;
 import vn.thangdev.ecommerce.dto.UpdateProductDTO;
@@ -31,6 +32,7 @@ import vn.thangdev.ecommerce.repository.ProductUseagesRepository;
 import vn.thangdev.ecommerce.repository.UsageRepository;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 	private final ProductRepository productRepository;
 	private final BrandRepository brandRepository;
@@ -44,17 +46,6 @@ public class ProductService {
 
 	@Value("${app.product-upload-dir-relative}")
 	private String uploadDirRelative;
-
-	public ProductService(ProductRepository productRepository, BrandRepository brandRepository,
-			CategoryRepository categoryRepository, UsageRepository usageRepository,
-			ProductUseagesRepository productUseagesRepository, FileUploadService fileUploadService) {
-		this.productRepository = productRepository;
-		this.brandRepository = brandRepository;
-		this.categoryRepository = categoryRepository;
-		this.usageRepository = usageRepository;
-		this.productUseagesRepository = productUseagesRepository;
-		this.fileUploadService = fileUploadService;
-	}
 
 	public Page<Product> getListProduct(String keyword, int page, int size) {
 		Page<Product> list;

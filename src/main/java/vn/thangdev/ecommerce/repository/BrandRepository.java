@@ -17,4 +17,6 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
 	Page<Brand> search(@Param("keyword") String keyword, Pageable pageable);
 
 	boolean existsByNameAndIdNot(String name, Long id);
+
+	boolean existsByName(String name);
 }

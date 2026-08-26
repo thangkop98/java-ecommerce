@@ -7,16 +7,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.model.Category;
 import vn.thangdev.ecommerce.repository.CategoryRepository;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
 	private final CategoryRepository categoryRepository;
-
-	public CategoryService(CategoryRepository categoryRepository) {
-		this.categoryRepository = categoryRepository;
-	}
 
 	public Page<Category> getListCategory(String keyword, int page, int size) {
 		Page<Category> list;
@@ -62,5 +60,9 @@ public class CategoryService {
 
 	public void deleteById(Long id) {
 		this.categoryRepository.deleteById(id);
+	}
+
+	public boolean checkExistedName(String name) {
+		return this.categoryRepository.existsByName(name);
 	}
 }

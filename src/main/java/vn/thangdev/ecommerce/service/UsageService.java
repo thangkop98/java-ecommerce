@@ -7,16 +7,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.model.Useage;
 import vn.thangdev.ecommerce.repository.UsageRepository;
 
 @Service
+@RequiredArgsConstructor
 public class UsageService {
 	private final UsageRepository usageRepository;
-
-	public UsageService(UsageRepository usageRepository) {
-		this.usageRepository = usageRepository;
-	}
 
 	public Page<Useage> getListUsage(String keyword, int page, int size) {
 		Page<Useage> list;
@@ -61,5 +59,9 @@ public class UsageService {
 
 	public void deleteById(Long id) {
 		this.usageRepository.deleteById(id);
+	}
+
+	public boolean checkExistedName(String name) {
+		return this.usageRepository.existsByName(name);
 	}
 }

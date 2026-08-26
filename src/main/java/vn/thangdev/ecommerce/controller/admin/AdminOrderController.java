@@ -7,14 +7,17 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.constant.OrderStatus;
 import vn.thangdev.ecommerce.exception.ResourceNotFoundException;
 import vn.thangdev.ecommerce.model.Order;
@@ -26,13 +29,16 @@ import vn.thangdev.ecommerce.specification.OrderSpec;
 
 @Controller
 @RequestMapping("/admin/order")
+@RequiredArgsConstructor
 public class AdminOrderController {
 	private final OrderService orderService;
 	private final UserRepository userRepository;
 
-	public AdminOrderController(OrderService orderService, UserRepository userRepository) {
-		this.orderService = orderService;
-		this.userRepository = userRepository;
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public String handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
+			RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("errorMessage", "Id không đúng định dạng, vui lòng kiểm tra lại!");
+		return "redirect:/admin/order";
 	}
 
 	@GetMapping

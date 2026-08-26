@@ -4,16 +4,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.dto.CreateUserDTO;
 import vn.thangdev.ecommerce.dto.UpdateUserDTO;
 import vn.thangdev.ecommerce.exception.ResourceNotFoundException;
@@ -23,13 +26,16 @@ import vn.thangdev.ecommerce.service.UserService;
 
 @Controller
 @RequestMapping("/admin/users")
+@RequiredArgsConstructor
 public class AdminUserController {
 	private final UserService userService;
 	private final RoleService roleService;
 
-	public AdminUserController(UserService userService, RoleService roleService) {
-		this.userService = userService;
-		this.roleService = roleService;
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public String handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
+			RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("errorMessage", "Id không đúng định dạng, vui lòng kiểm tra lại!");
+		return "redirect:/admin/users";
 	}
 
 	@GetMapping
@@ -41,7 +47,7 @@ public class AdminUserController {
 		} else {
 			users = this.userService.searchListUser(keyword, page, size);
 		}
-		System.out.println("user list = " + users);
+
 		model.addAttribute("users", users);
 		model.addAttribute("keyword", keyword);
 		return "/admin/user/list";
@@ -57,8 +63,9 @@ public class AdminUserController {
 	@PostMapping("/create")
 	// binding phải đứng ngay sau object được validate
 	public String postCreateUser(@Valid @ModelAttribute("user") CreateUserDTO inputUser, BindingResult bindingResult,
-			@RequestParam(required = false, name = "image") MultipartFile avatar, Model model, RedirectAttributes redirectAttributes) {
-		System.out.println("post create = " + inputUser);
+			@RequestParam(required = false, name = "image") MultipartFile avatar, Model model,
+			RedirectAttributes redirectAttributes) {
+
 		if (this.userService.checkExistedEmail(inputUser.getEmail())) {
 			bindingResult.rejectValue("email", "email.exists", "Email đã tồn tại");
 		}
@@ -87,7 +94,6 @@ public class AdminUserController {
 			@RequestParam(name = "image", required = false) MultipartFile avatar, Model model,
 			RedirectAttributes redirectAttributes) {
 
-		System.out.println("update user 1213" + inputUser);
 		if (this.userService.checkExistedByEmailForUpdate(inputUser.getEmail(), inputUser.getId())) {
 			bindingResult.rejectValue("email", "email.exists", "Email đã tồn tại");
 		}

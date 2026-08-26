@@ -1,7 +1,15 @@
 package vn.thangdev.ecommerce.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateOrderRequestDTO {
 	@NotBlank(message = "Vui lòng điền họ tên")
 	private String username;
@@ -11,33 +19,4 @@ public class CreateOrderRequestDTO {
 
 	@NotBlank(message = "Vui lòng điền số điện thoại")
 	private String phone;
-
-	public CreateOrderRequestDTO() {
-
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
 }

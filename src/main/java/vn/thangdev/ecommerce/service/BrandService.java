@@ -7,16 +7,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.model.Brand;
 import vn.thangdev.ecommerce.repository.BrandRepository;
 
 @Service
+@RequiredArgsConstructor
 public class BrandService {
 	private final BrandRepository brandRepository;
-
-	public BrandService(BrandRepository brandRepository) {
-		this.brandRepository = brandRepository;
-	}
 
 	public Page<Brand> getListBrand(String keyword, int page, int size) {
 		Page<Brand> list;
@@ -61,5 +59,9 @@ public class BrandService {
 
 	public void deleteById(Long id) {
 		this.brandRepository.deleteById(id);
+	}
+
+	public boolean checkExistedName(String name) {
+		return this.brandRepository.existsByName(name);
 	}
 }

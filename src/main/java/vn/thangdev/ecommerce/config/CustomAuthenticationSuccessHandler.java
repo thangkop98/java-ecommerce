@@ -17,7 +17,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 			Authentication authentication) throws IOException, ServletException {
 
 		if (authentication.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-			System.out.println("role user is 2121 = " + authentication.getAuthorities());
 			response.sendRedirect("/admin");
 
 		} else {

@@ -13,17 +13,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 	private final CustomAuthenticationSuccessHandler successHandler;
 
-	public SecurityConfig(CustomAuthenticationSuccessHandler successHandler) {
-		this.successHandler = successHandler;
-	}
-
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests((authorize) -> authorize
 						.requestMatchers("/", "/login", "/error", "/register", "/css/**", "/js/**", "/images/**",
@@ -40,16 +39,8 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-//	@Bean
-//	public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-//		UserDetails userDetails = User.withUsername("thangdz").password(passwordEncoder.encode("123456")).roles("USER")
-//				.build();
-//		System.out.println("user details = " + userDetails);
-//		return new InMemoryUserDetailsManager(userDetails);
-//	}
-
 	@Bean
-	public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
+	AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
 			PasswordEncoder passwordEncoder) {
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
 		authenticationProvider.setPasswordEncoder(passwordEncoder);
@@ -58,13 +49,12 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-//		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 
 	@Bean
-	public SpringSessionRememberMeServices rememberMeServices() {
+	SpringSessionRememberMeServices rememberMeServices() {
 		SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
 
 		rememberMeServices.setAlwaysRemember(false);

@@ -12,17 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.dto.UpdateAccountDTO;
 import vn.thangdev.ecommerce.model.User;
 import vn.thangdev.ecommerce.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class UserController {
 	private final UserService userService;
-
-	public UserController(UserService userService) {
-		this.userService = userService;
-	}
 
 	@GetMapping("/manage-user")
 	public String manageAccount(Authentication auth, Model model) {

@@ -5,16 +5,14 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.model.CartDetail;
 import vn.thangdev.ecommerce.repository.CartDetailRepository;
 
 @Service
+@RequiredArgsConstructor
 public class CartDetailService {
 	private final CartDetailRepository cartDetailRepository;
-
-	public CartDetailService(CartDetailRepository cartDetailRepository) {
-		this.cartDetailRepository = cartDetailRepository;
-	}
 
 	public List<CartDetail> getCartDetails(Long cartId) {
 		return cartDetailRepository.findCartDetailsWithProduct(cartId);

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.constant.OrderStatus;
 import vn.thangdev.ecommerce.dto.CreateOrderRequestDTO;
 import vn.thangdev.ecommerce.model.CartDetail;
@@ -22,18 +23,13 @@ import vn.thangdev.ecommerce.repository.CartDetailRepository;
 import vn.thangdev.ecommerce.repository.OrderRepository;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 	private final OrderRepository orderRepository;
 	private final CartDetailRepository cartDetailRepository;
 
-	public OrderService(OrderRepository orderRepository, CartDetailRepository cartDetailRepository) {
-		this.orderRepository = orderRepository;
-		this.cartDetailRepository = cartDetailRepository;
-	}
-
 	@Transactional
 	public void createOrder(User user, List<CartDetail> cartDetails, CreateOrderRequestDTO data) {
-		System.out.println("order user " + (data.getUsername().isBlank()));
 		Order order = new Order();
 		order.setUser(user);
 		order.setCode("");

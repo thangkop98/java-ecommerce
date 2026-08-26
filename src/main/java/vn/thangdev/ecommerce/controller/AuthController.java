@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.constant.RoleName;
 import vn.thangdev.ecommerce.dto.RegisterUserDTO;
 import vn.thangdev.ecommerce.exception.ResourceNotFoundException;
@@ -19,16 +20,11 @@ import vn.thangdev.ecommerce.repository.RoleRepository;
 import vn.thangdev.ecommerce.repository.UserRepository;
 
 @Controller
+@RequiredArgsConstructor
 public class AuthController {
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder encoder;
 	private final UserRepository userRepository;
-
-	AuthController(RoleRepository roleRepository, PasswordEncoder encoder, UserRepository userRepository) {
-		this.roleRepository = roleRepository;
-		this.encoder = encoder;
-		this.userRepository = userRepository;
-	}
 
 	@GetMapping("/login")
 	public String login() {

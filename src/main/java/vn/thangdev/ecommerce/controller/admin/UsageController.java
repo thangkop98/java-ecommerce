@@ -4,26 +4,33 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.exception.ResourceNotFoundException;
 import vn.thangdev.ecommerce.model.Useage;
 import vn.thangdev.ecommerce.service.UsageService;
 
 @Controller
 @RequestMapping("/admin/usage")
+@RequiredArgsConstructor
 public class UsageController {
 	private final UsageService usageService;
 
-	public UsageController(UsageService usageService) {
-		this.usageService = usageService;
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public String handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
+		RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("errorMessage", "Id không đúng định dạng, vui lòng kiểm tra lại!");
+		return "redirect:/admin/usage";
 	}
 
 	@GetMapping
@@ -43,6 +50,10 @@ public class UsageController {
 	@PostMapping("/create")
 	public String postCreateUsage(@Valid @ModelAttribute("usage") Useage data, BindingResult bindingResult, Model model,
 			RedirectAttributes redirectAttributes) {
+		if (this.usageService.checkExistedName(data.getName())) {
+			bindingResult.rejectValue("name", "name.exists", "Tên mục đích sử dụng đã tồn tại");
+		}
+
 		if (bindingResult.hasErrors()) {
 			return "/admin/usage/create";
 		}

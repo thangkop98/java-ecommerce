@@ -5,10 +5,13 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.exception.ResourceNotFoundException;
 import vn.thangdev.ecommerce.model.Brand;
 import vn.thangdev.ecommerce.model.Product;
@@ -18,16 +21,15 @@ import vn.thangdev.ecommerce.repository.UsageRepository;
 import vn.thangdev.ecommerce.service.ProductService;
 
 @Controller
+@RequiredArgsConstructor
 public class ProductController {
 	private final ProductService productService;
 	private final BrandRepository brandRepository;
 	private final UsageRepository usageRepository;
 
-	public ProductController(ProductService productService, BrandRepository brandRepository,
-			UsageRepository usageRepository) {
-		this.productService = productService;
-		this.brandRepository = brandRepository;
-		this.usageRepository = usageRepository;
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public String handleTypeMisMatch(MethodArgumentTypeMismatchException ex) {
+		return "redirect:/";
 	}
 
 	@GetMapping("/")

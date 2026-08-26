@@ -6,16 +6,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.dto.CreateProductDTO;
 import vn.thangdev.ecommerce.dto.UpdateProductDTO;
 import vn.thangdev.ecommerce.exception.ResourceNotFoundException;
@@ -27,18 +30,18 @@ import vn.thangdev.ecommerce.service.ProductService;
 
 @Controller
 @RequestMapping("/admin/product")
+@RequiredArgsConstructor
 public class AdminProductController {
 	private final ProductService productService;
 	private final CategoryRepository categoryRepository;
 	private final BrandRepository brandRepository;
 	private final UsageRepository usageRepository;
 
-	public AdminProductController(ProductService productService, CategoryRepository categoryRepository,
-			BrandRepository brandRepository, UsageRepository usageRepository) {
-		this.productService = productService;
-		this.categoryRepository = categoryRepository;
-		this.brandRepository = brandRepository;
-		this.usageRepository = usageRepository;
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public String handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
+			RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("errorMessage", "Id không đúng định dạng, vui lòng kiểm tra lại!");
+		return "redirect:/admin/product";
 	}
 
 	@GetMapping
@@ -101,7 +104,7 @@ public class AdminProductController {
 	public String postUpdateProduct(@Valid @ModelAttribute("product") UpdateProductDTO data,
 			BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes,
 			@RequestParam("image") MultipartFile thumbnail) {
-		System.out.println("error update product = " + bindingResult.getFieldErrors());
+
 		if (bindingResult.hasErrors()) {
 			return "/admin/product/update";
 		}

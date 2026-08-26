@@ -17,4 +17,6 @@ public interface UsageRepository extends JpaRepository<Useage, Long> {
 	Page<Useage> search(@Param("keyword") String keyword, Pageable pageable);
 
 	boolean existsByNameAndIdNot(String name, Long id);
+
+	boolean existsByName(String name);
 }

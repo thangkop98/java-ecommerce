@@ -11,26 +11,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.dto.CreateOrderRequestDTO;
 import vn.thangdev.ecommerce.model.Cart;
 import vn.thangdev.ecommerce.model.CartDetail;
 import vn.thangdev.ecommerce.model.Order;
 import vn.thangdev.ecommerce.model.User;
 import vn.thangdev.ecommerce.repository.UserRepository;
-import vn.thangdev.ecommerce.service.CartService;
 import vn.thangdev.ecommerce.service.OrderService;
 
 @Controller
+@RequiredArgsConstructor
 public class OrderController {
 	private final OrderService orderService;
-	private final CartService cartService;
 	private final UserRepository userRepository;
 
-	public OrderController(OrderService orderService, CartService cartService, UserRepository userRepository) {
-		this.orderService = orderService;
-		this.cartService = cartService;
-		this.userRepository = userRepository;
-	}
 
 	@GetMapping("/thanks")
 	public String thanks() {
