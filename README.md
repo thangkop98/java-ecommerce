@@ -130,8 +130,8 @@ Nếu thông tin kết nối MySQL trên máy bạn khác với cấu hình trê
 
 ### 6.4. Build dự án
 Dự án sử dụng Maven Wrapper, vì vậy không cần cài Maven ở phạm vi toàn cục
-+ Với máy windows, chạy lệnh: mvnw.cmd clean package hoặc ./mvnw.cmd clean package
-+ Với máy linux/macOS, chạy lệnh: ./mvnw clean package
++ Với máy windows, mở terminal/PowerShell/Bash và chạy lệnh: mvnw.cmd clean package hoặc ./mvnw.cmd clean package
++ Với máy linux/macOS, mở terminal và chạy lệnh: ./mvnw clean package
 
 ### 6.5. Chạy dự án
 #### 6.5.1. Chạy dự án với Maven
