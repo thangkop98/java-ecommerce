@@ -61,7 +61,7 @@ public class AuthController {
 		user.setPassword(this.encoder.encode(inputUser.getPassword()));
 		user.setPhone(inputUser.getPhone());
 		user.setAddress(inputUser.getAddress());
-		user.setRole_id(userRole.getId());
+		user.setRole(userRole);
 
 		this.userRepository.save(user);
 		redirectAttributes.addFlashAttribute("successMessage", "Đăng ký người dùng thành công");

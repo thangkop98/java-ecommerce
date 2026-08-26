@@ -95,7 +95,7 @@
 					<div class="col-md-6">
 						<label for="role" class="form-label">Vai trò</label>
 						<select id="role" class="form-select" th:field="*{role_id}"
-							th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+							th:classappend="${#fields.hasErrors('role_id')} ? 'is-invalid' : ''">
 							<option selected value="">- Chọn vai trò -</option>
 							<option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" />
 						</select>

@@ -11,17 +11,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.RequiredArgsConstructor;
 import vn.thangdev.ecommerce.dto.CreateUserDTO;
 import vn.thangdev.ecommerce.dto.UpdateAccountDTO;
 import vn.thangdev.ecommerce.dto.UpdateUserDTO;
+import vn.thangdev.ecommerce.exception.ResourceNotFoundException;
+import vn.thangdev.ecommerce.model.Role;
 import vn.thangdev.ecommerce.model.User;
+import vn.thangdev.ecommerce.repository.RoleRepository;
 import vn.thangdev.ecommerce.repository.UserRepository;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder bcryptEncoder;
 	private final FileUploadService fileUploadService;
+	private final RoleRepository roleRepository;
+
 
 	@Value("${app.user-upload-dir-absolute}")
 	private String uploadDirAbsolute;
@@ -29,26 +36,20 @@ public class UserService {
 	@Value("${app.user-upload-dir-relative}")
 	private String uploadDirRelative;
 
-	public UserService(UserRepository userRepository, PasswordEncoder bcryptEncoder,
-			FileUploadService fileUploadService) {
-		this.userRepository = userRepository;
-		this.bcryptEncoder = bcryptEncoder;
-		this.fileUploadService = fileUploadService;
-	}
-
 	public Page<User> getListUser(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 		return this.userRepository.findAll(pageable);
 	}
 
 	public void createUser(CreateUserDTO dto, MultipartFile image) {
+		Role role = this.roleRepository.findById(dto.getRole_id()).orElseThrow(()-> new ResourceNotFoundException(404, "Không tìm thấy role", "redirect:/admin/users"));
 		try {
 			User user = new User();
 			user.setName(dto.getName());
 			user.setEmail(dto.getEmail());
 			user.setPhone(dto.getPhone());
 			user.setAddress(dto.getAddress());
-			user.setRole_id(dto.getRole_id());
+			user.setRole(role);
 			String hashPassword = this.bcryptEncoder.encode(dto.getPassword());
 			user.setPassword(hashPassword);
 			if (image != null && !image.isEmpty()) {
@@ -83,14 +84,16 @@ public class UserService {
 	}
 
 	public void updateUser(UpdateUserDTO dto, MultipartFile image) {
+		User user = this.userRepository.findById(dto.getId())
+					.orElseThrow(() -> new ResourceNotFoundException(404, "Không tìm thấy user", "redirect:/admin/users"));
+
 		try {
-			User user = this.userRepository.findById(dto.getId())
-					.orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
+			
 			user.setName(dto.getName());
 			user.setEmail(dto.getEmail());
 			user.setPhone(dto.getPhone());
 			user.setAddress(dto.getAddress());
-			user.setRole_id(dto.getRole_id());
+			user.setRole(dto.getRole());
 
 			if (image != null && !image.isEmpty()) {
 				String path = this.fileUploadService.upload(image, this.uploadDirAbsolute, this.uploadDirRelative,

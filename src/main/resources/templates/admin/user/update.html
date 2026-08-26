@@ -97,12 +97,12 @@
 					</div>
 					<div class="col-md-6">
 						<label for="role" class="form-label">Vai trò</label>
-						<select id="role" class="form-select" th:field="*{role_id}"
-							th:classappend="${#fields.hasErrors('role_id')} ? 'is-invalid' : ''">
+						<select id="role" class="form-select" th:field="*{role}"
+							th:classappend="${#fields.hasErrors('role')} ? 'is-invalid' : ''">
 							<option selected value="">- Chọn vai trò -</option>
 							<option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}" />
 						</select>
-						<span th:if="${#fields.hasErrors('role_id')}" th:errors="*{role_id}"
+						<span th:if="${#fields.hasErrors('role')}" th:errors="*{role}"
 							class="invalid-feedback"></span>
 					</div>
 					<div class="col-md-6">
@@ -112,7 +112,7 @@
 					</div>
 					<div class="col-md-6"></div>
 					<div class="col-md-6">
-						<img th:if="${user.avatar != null}" id="imagePreview" src="#" alt="Image preview" style="width: 200px;
+						<img id="imagePreview" src="#" alt="Image preview" style="width: 200px;
 						            height: 200px;
 						            border-radius: 8px;" th:src="${user.avatar}">
 					</div>

@@ -57,7 +57,7 @@ public class AdminUserController {
 	@PostMapping("/create")
 	// binding phải đứng ngay sau object được validate
 	public String postCreateUser(@Valid @ModelAttribute("user") CreateUserDTO inputUser, BindingResult bindingResult,
-			@RequestParam("image") MultipartFile avatar, Model model, RedirectAttributes redirectAttributes) {
+			@RequestParam(required = false, name = "image") MultipartFile avatar, Model model, RedirectAttributes redirectAttributes) {
 		System.out.println("post create = " + inputUser);
 		if (this.userService.checkExistedEmail(inputUser.getEmail())) {
 			bindingResult.rejectValue("email", "email.exists", "Email đã tồn tại");

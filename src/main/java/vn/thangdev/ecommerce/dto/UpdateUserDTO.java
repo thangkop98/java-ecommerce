@@ -4,7 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import vn.thangdev.ecommerce.model.Role;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class UpdateUserDTO {
 	private Long id;
 
@@ -21,81 +28,10 @@ public class UpdateUserDTO {
 	private String address;
 
 	@NotNull(message = "Vui lòng chọn vai trò")
-	private Long role_id;
+	private Role role;
 
 	@Pattern(regexp = "^$|.{8,}", message = "Mật khẩu phải chứa tối thiểu 8 ký tự")
 	private String password;
 
 	private String avatar;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public Long getRole_id() {
-		return role_id;
-	}
-
-	public void setRole_id(Long role_id) {
-		this.role_id = role_id;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-
-	@Override
-	public String toString() {
-		return "UpdateUserDTO [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", address="
-				+ address + ", role_id=" + role_id + ", password=" + password + ", avatar=" + avatar + "]";
-	}
-
 }
