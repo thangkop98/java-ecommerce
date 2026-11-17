@@ -1,4 +1,6 @@
 # Dự án LaptopShop
+![CI](https://github.com/thangkop98/java-ecommerce/actions/workflows/ci.yml/badge.svg)
+
 - Một ứng dụng web thương mại điện tử full-stack được xây dựng bằng Java và Spring Boot. Dự án này cung cấp một quy trình thương mại điện tử hoàn chỉnh bao gồm xác thực người dùng, duyệt sản phẩm, giỏ hàng, đặt hàng, quản lý đơn hàng và quản trị.
 
 ## 1. Tổng quan
@@ -170,6 +172,42 @@ Khách hàng:
 Admin:
 - username/email: admin@gmail.com
 - password: 12345678
+
+### 6.6. Chạy bằng Docker
+Chỉ cần cài Docker, không cần cài Java hay MySQL:
+```bash
+cp .env.example .env          # tùy chọn: đổi port, mật khẩu
+docker compose up -d --build  # app + MySQL + Prometheus + Grafana
+docker compose ps             # app "healthy" là sẵn sàng
+docker compose down           # dừng (giữ dữ liệu), thêm -v để xóa dữ liệu
+```
+
+| Service | URL | Ghi chú |
+|---|---|---|
+| Web app | http://localhost:8080 | Tài khoản demo ở mục 6.5.5 |
+| MySQL | `localhost:3307` | user `ecommerce` / `ecommerce` |
+| Prometheus | http://localhost:9090 | Xem target, alert rules |
+| Grafana | http://localhost:3000 | `admin` / `admin`, dashboard "Ecommerce App" |
+
+### 6.7. Monitoring
+- **Actuator** chạy ở port nội bộ `8081` (không publish ra ngoài): `/actuator/health/readiness` dùng cho healthcheck của Docker, `/actuator/prometheus` cho Prometheus.
+- **Grafana dashboard** (tự động provision): trạng thái, uptime, request/giây, tỉ lệ lỗi 5xx, latency p50/p95/p99, endpoint chậm nhất, JVM heap, HikariCP connection pool, CPU, GC, threads.
+- **Alert rules** ([monitoring/prometheus/alerts.yml](monitoring/prometheus/alerts.yml)):
+
+| Alert | Điều kiện | Mức độ |
+|---|---|---|
+| `AppDown` | Không scrape được app > 1 phút | critical |
+| `HighErrorRate` | > 5% request trả về 5xx trong 5 phút | critical |
+| `HighLatencyP95` | p95 latency > 1s trong 5 phút | warning |
+| `HighHeapUsage` | JVM heap > 90% trong 10 phút | warning |
+| `DbConnectionPoolPending` | Có request chờ connection DB > 2 phút | warning |
+
+### 6.8. CI/CD
+GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) chạy với mỗi push/PR vào `main`:
+1. Build và chạy test với MySQL thật
+2. Build Docker image, dựng cả stack và smoke test (các trang chính, đăng nhập admin, log không có `ERROR`)
+3. Kiểm tra config Prometheus và xác nhận Prometheus scrape được metric của app
+4. Push image lên GHCR (`ghcr.io/thangkop98/java-ecommerce`) khi merge vào `main`
 
 ## 7. Cấu trúc thư mục dự án
 <img width="599" height="476" alt="image" src="https://github.com/user-attachments/assets/a7ab44f1-5faa-4068-88ce-a491a64bb27d" />
