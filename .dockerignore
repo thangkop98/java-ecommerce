@@ -1,0 +1,17 @@
+target/
+bin/
+.git/
+.idea/
+.vscode/
+.settings/
+.agents/
+.classpath
+.project
+.factorypath
+*.iml
+database/
+HELP.md
+README.md
+.env
+docker-compose*.yml
+Dockerfile

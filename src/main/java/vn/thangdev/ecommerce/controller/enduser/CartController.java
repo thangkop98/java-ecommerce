@@ -43,7 +43,7 @@ public class CartController {
 			model.addAttribute("cartdetails", cartDetails);
 		}
 
-		return "/user/cart/list";
+		return "user/cart/list";
 	}
 
 	@PostMapping("/cart/add")
@@ -123,6 +123,6 @@ public class CartController {
 		model.addAttribute("total", total);
 		model.addAttribute("user", new CreateOrderRequestDTO());
 
-		return "/user/cart/checkout";
+		return "user/cart/checkout";
 	}
 }

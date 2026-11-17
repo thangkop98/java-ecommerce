@@ -38,13 +38,13 @@ public class BrandController {
 			@RequestParam(defaultValue = "10") int size, Model model) {
 		Page<Brand> list = this.brandService.getListBrand(keyword, page, size);
 		model.addAttribute("brands", list);
-		return "/admin/brand/list";
+		return "admin/brand/list";
 	}
 
 	@GetMapping("/create")
 	public String getCreateBrand(Model model) {
 		model.addAttribute("brand", new Brand());
-		return "/admin/brand/create";
+		return "admin/brand/create";
 	}
 
 	@PostMapping("/create")
@@ -55,7 +55,7 @@ public class BrandController {
 		}
 
 		if (bindingResult.hasErrors()) {
-			return "/admin/brand/create";
+			return "admin/brand/create";
 		}
 		this.brandService.createBrand(data);
 		redirectAttributes.addFlashAttribute("successMessage", "Tạo hãng sản xuất thành công!");
@@ -68,7 +68,7 @@ public class BrandController {
 				() -> new ResourceNotFoundException(404, "Không tìm thấy hãng sản xuất", "redirect:/admin/brand"));
 
 		model.addAttribute("brand", brand);
-		return "/admin/brand/update";
+		return "admin/brand/update";
 	}
 
 	@PostMapping("/update/{id}")
@@ -79,7 +79,7 @@ public class BrandController {
 		}
 
 		if (bindingResult.hasErrors()) {
-			return "/admin/brand/update";
+			return "admin/brand/update";
 		}
 		this.brandService.updateBrand(data);
 		redirectAttributes.addFlashAttribute("successMessage", "Cật nhật hãng sản xuất thành công!");

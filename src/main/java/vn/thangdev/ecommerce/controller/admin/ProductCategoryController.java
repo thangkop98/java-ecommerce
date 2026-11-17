@@ -38,13 +38,13 @@ public class ProductCategoryController {
 			@RequestParam(defaultValue = "10") int size, Model model) {
 		Page<Category> list = this.categoryService.getListCategory(keyword, page, size);
 		model.addAttribute("categories", list);
-		return "/admin/category/list";
+		return "admin/category/list";
 	}
 
 	@GetMapping("/create")
 	public String getCreateCategory(Model model) {
 		model.addAttribute("category", new Category());
-		return "/admin/category/create";
+		return "admin/category/create";
 	}
 
 	@PostMapping("/create")
@@ -56,7 +56,7 @@ public class ProductCategoryController {
 		}
 
 		if (bindingResult.hasErrors()) {
-			return "/admin/category/create";
+			return "admin/category/create";
 		}
 		this.categoryService.createCategory(data);
 		redirectAttributes.addFlashAttribute("successMessage", "Tạo danh mục thành công!");
@@ -69,7 +69,7 @@ public class ProductCategoryController {
 				() -> new ResourceNotFoundException(404, "Không tìm thấy danh mục", "redirect:/admin/category"));
 
 		model.addAttribute("category", category);
-		return "/admin/category/update";
+		return "admin/category/update";
 	}
 
 	@PostMapping("/update/{id}")
@@ -80,7 +80,7 @@ public class ProductCategoryController {
 		}
 
 		if (bindingResult.hasErrors()) {
-			return "/admin/category/update";
+			return "admin/category/update";
 		}
 		this.categoryService.updateCategory(data);
 		redirectAttributes.addFlashAttribute("successMessage", "Cật nhật danh mục thành công!");

@@ -1,0 +1,2 @@
+ALTER TABLE brands
+ADD COLUMN test_column VARCHAR(255) NULL;

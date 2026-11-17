@@ -50,7 +50,7 @@ public class AdminProductController {
 		Page<Product> list = this.productService.getListProduct(keyword, page, size);
 		model.addAttribute("products", list);
 		model.addAttribute("keyword", keyword);
-		return "/admin/product/list";
+		return "admin/product/list";
 	}
 
 	@GetMapping("/create")
@@ -59,7 +59,7 @@ public class AdminProductController {
 		model.addAttribute("categories", this.categoryRepository.findAll());
 		model.addAttribute("brands", this.brandRepository.findAll());
 		model.addAttribute("usages", this.usageRepository.findAll());
-		return "/admin/product/create";
+		return "admin/product/create";
 	}
 
 	@PostMapping("/create")
@@ -67,7 +67,7 @@ public class AdminProductController {
 			@RequestParam("thumbnail") MultipartFile thumbnail, BindingResult bindingResult, Model model,
 			RedirectAttributes redirectAttributes) {
 		if (bindingResult.hasErrors()) {
-			return "/admin/product/create";
+			return "admin/product/create";
 		}
 		this.productService.createProduct(data, thumbnail);
 		redirectAttributes.addFlashAttribute("successMessage", "Tạo sản phẩm thành công!");
@@ -97,7 +97,7 @@ public class AdminProductController {
 		model.addAttribute("brands", this.brandRepository.findAll());
 		model.addAttribute("usages", this.usageRepository.findAll());
 
-		return "/admin/product/update";
+		return "admin/product/update";
 	}
 
 	@PostMapping("/update/{id}")
@@ -106,7 +106,7 @@ public class AdminProductController {
 			@RequestParam("image") MultipartFile thumbnail) {
 
 		if (bindingResult.hasErrors()) {
-			return "/admin/product/update";
+			return "admin/product/update";
 		}
 		this.productService.updateProduct(data, thumbnail);
 		redirectAttributes.addFlashAttribute("successMessage", "Cật nhật sản phẩm thành công!");

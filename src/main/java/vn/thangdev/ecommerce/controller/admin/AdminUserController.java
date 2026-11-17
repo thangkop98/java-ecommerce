@@ -50,14 +50,14 @@ public class AdminUserController {
 
 		model.addAttribute("users", users);
 		model.addAttribute("keyword", keyword);
-		return "/admin/user/list";
+		return "admin/user/list";
 	}
 
 	@GetMapping("/create")
 	public String getCreateUser(Model model) {
 		model.addAttribute("user", new CreateUserDTO());
 		model.addAttribute("roles", this.roleService.getListRoles());
-		return "/admin/user/create";
+		return "admin/user/create";
 	}
 
 	@PostMapping("/create")
@@ -72,7 +72,7 @@ public class AdminUserController {
 
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("roles", this.roleService.getListRoles());
-			return "/admin/user/create";
+			return "admin/user/create";
 		}
 		this.userService.createUser(inputUser, avatar);
 		redirectAttributes.addFlashAttribute("successMessage", "Tạo người dùng thành công!");
@@ -86,7 +86,7 @@ public class AdminUserController {
 
 		model.addAttribute("user", user);
 		model.addAttribute("roles", this.roleService.getListRoles());
-		return "/admin/user/update";
+		return "admin/user/update";
 	}
 
 	@PostMapping("/update/{id}")
@@ -100,7 +100,7 @@ public class AdminUserController {
 
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("roles", this.roleService.getListRoles());
-			return "/admin/user/update";
+			return "admin/user/update";
 		}
 		this.userService.updateUser(inputUser, avatar);
 		redirectAttributes.addFlashAttribute("successMessage", "Cật nhật người dùng thành công!");
@@ -112,7 +112,7 @@ public class AdminUserController {
 		User user = this.userService.findUserById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(404, "Không tìm thấy user", "redirect:/admin/users"));
 		model.addAttribute("user", user);
-		return "/admin/user/show";
+		return "admin/user/show";
 	}
 
 	@PostMapping("/delete/{id}")

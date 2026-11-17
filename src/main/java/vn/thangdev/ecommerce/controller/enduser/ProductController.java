@@ -38,7 +38,7 @@ public class ProductController {
 		Page<Product> list = this.productService.getProductsInHomePage(page, size);
 		model.addAttribute("products", list);
 
-		return "/user/home";
+		return "user/home";
 	}
 
 	@GetMapping("/product/{id}")
@@ -50,7 +50,7 @@ public class ProductController {
 		model.addAttribute("product", pr);
 		model.addAttribute("brands", brands);
 
-		return "/user/product/detail";
+		return "user/product/detail";
 	}
 
 	@GetMapping("/products")
@@ -67,6 +67,6 @@ public class ProductController {
 		model.addAttribute("brands", brands);
 		model.addAttribute("usages", usages);
 
-		return "/user/product/list";
+		return "user/product/list";
 	}
 }

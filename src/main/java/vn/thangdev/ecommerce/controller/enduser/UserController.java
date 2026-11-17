@@ -28,7 +28,7 @@ public class UserController {
 				.orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
 
 		model.addAttribute("user", user);
-		return "/user/manage";
+		return "user/manage";
 	}
 
 	@PostMapping("/manage-user")
@@ -41,7 +41,7 @@ public class UserController {
 		}
 
 		if (bindingResult.hasErrors()) {
-			return "/user/manage";
+			return "user/manage";
 		}
 		this.userService.updateAccount(inputUser, avatar);
 		redirectAttributes.addFlashAttribute("updateAccountSuccess", "Cật nhật tài khoản thành công!");

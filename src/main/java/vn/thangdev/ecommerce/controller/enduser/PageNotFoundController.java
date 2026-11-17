@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageNotFoundController {
     @GetMapping("/not-found")
     public String redirectToNotFoundPage() {
-        return "/user/404";
+        return "user/404";
     }
     
 }

@@ -38,13 +38,13 @@ public class UsageController {
 			@RequestParam(defaultValue = "10") int size, Model model) {
 		Page<Useage> list = this.usageService.getListUsage(keyword, page, size);
 		model.addAttribute("usages", list);
-		return "/admin/usage/list";
+		return "admin/usage/list";
 	}
 
 	@GetMapping("/create")
 	public String getCreateUsage(Model model) {
 		model.addAttribute("usage", new Useage());
-		return "/admin/usage/create";
+		return "admin/usage/create";
 	}
 
 	@PostMapping("/create")
@@ -55,7 +55,7 @@ public class UsageController {
 		}
 
 		if (bindingResult.hasErrors()) {
-			return "/admin/usage/create";
+			return "admin/usage/create";
 		}
 		this.usageService.createUsage(data);
 		redirectAttributes.addFlashAttribute("successMessage", "Tạo mục đích sử dụng thành công!");
@@ -68,7 +68,7 @@ public class UsageController {
 				() -> new ResourceNotFoundException(404, "Không tìm thấy mục đích sử dụng", "redirect:/admin/usage"));
 
 		model.addAttribute("usage", useage);
-		return "/admin/usage/update";
+		return "admin/usage/update";
 	}
 
 	@PostMapping("/update/{id}")
@@ -79,7 +79,7 @@ public class UsageController {
 		}
 
 		if (bindingResult.hasErrors()) {
-			return "/admin/usage/update";
+			return "admin/usage/update";
 		}
 		this.usageService.updateUsage(data);
 		redirectAttributes.addFlashAttribute("successMessage", "Cật nhật mục đích sử dụng thành công!");
