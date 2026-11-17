@@ -1,0 +1,59 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: ecommerce-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-java-ecommerce}
+      MYSQL_USER: ${DB_USER:-ecommerce}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-ecommerce}
+      TZ: Asia/Ho_Chi_Minh
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      # Migration V1 được dump trên Windows (tên bảng chữ thường: spring_session),
+      # còn Spring Session query SPRING_SESSION -> bật không phân biệt hoa/thường như Windows.
+      # Chỉ có hiệu lực khi khởi tạo DB lần đầu (volume trống).
+      - --lower-case-table-names=1
+    ports:
+      # 3307 trên máy host để không đụng MySQL local đang chạy ở 3306
+      - "${DB_HOST_PORT:-3307}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  app:
+    build: .
+    image: ecommerce-app:latest
+    container_name: ecommerce-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Spring Boot tự map biến môi trường -> property (ghi đè application.properties)
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${DB_NAME:-java-ecommerce}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-ecommerce}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-ecommerce}
+      SPRING_JPA_SHOWSQL: "false"
+      # Ảnh upload lưu ra volume thay vì src/main/resources (không tồn tại trong container)
+      APP_PRODUCTUPLOADDIRABSOLUTE: /app/data/uploads/product
+      APP_USERUPLOADDIRABSOLUTE: /app/data/uploads/user
+      # Phục vụ /uploads/** từ cả ảnh có sẵn trong jar lẫn ảnh mới upload trên volume
+      SPRING_WEB_RESOURCES_STATICLOCATIONS: classpath:/static/,file:/app/data/
+      JAVA_OPTS: -XX:MaxRAMPercentage=75.0
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    volumes:
+      - uploads:/app/data/uploads
+
+volumes:
+  mysql-data:
+  uploads:
