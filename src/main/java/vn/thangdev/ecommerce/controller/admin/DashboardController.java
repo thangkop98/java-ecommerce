@@ -28,6 +28,6 @@ public class DashboardController {
 		model.addAttribute("product", countProduct);
 		model.addAttribute("user", countUser);
 
-		return "/admin/dashboard";
+		return "admin/dashboard";
 	}
 }

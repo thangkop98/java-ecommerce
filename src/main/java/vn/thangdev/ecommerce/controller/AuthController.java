@@ -28,13 +28,13 @@ public class AuthController {
 
 	@GetMapping("/login")
 	public String login() {
-		return "/auth/login";
+		return "auth/login";
 	}
 
 	@GetMapping("/register")
 	public String getRegister(Model model) {
 		model.addAttribute("user", new RegisterUserDTO());
-		return "/auth/register";
+		return "auth/register";
 	}
 
 	@PostMapping("/register")
@@ -48,7 +48,7 @@ public class AuthController {
 		}
 
 		if (bindingResult.hasErrors()) {
-			return "/auth/register";
+			return "auth/register";
 		}
 
 		User user = new User();
@@ -66,6 +66,6 @@ public class AuthController {
 
 	@GetMapping("/403")
 	public String forbidden() {
-		return "/error/403";
+		return "error/403";
 	}
 }
