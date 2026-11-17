@@ -1,0 +1,54 @@
+groups:
+  - name: ecommerce-app
+    rules:
+      - alert: AppDown
+        expr: up{job="ecommerce-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Ecommerce app không phản hồi"
+          description: "Prometheus không scrape được {{ $labels.instance }} trong hơn 1 phút."
+
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_server_requests_seconds_count{job="ecommerce-app", status=~"5.."}[5m]))
+            / sum(rate(http_server_requests_seconds_count{job="ecommerce-app"}[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Tỉ lệ lỗi 5xx cao"
+          description: "Hơn 5% request trả về 5xx trong 5 phút (hiện tại {{ $value | humanizePercentage }})."
+
+      - alert: HighLatencyP95
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le) (rate(http_server_requests_seconds_bucket{job="ecommerce-app", uri!~"/actuator.*"}[5m]))
+          ) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latency p95 cao"
+          description: "p95 latency > 1s trong 5 phút (hiện tại {{ $value | humanizeDuration }})."
+
+      - alert: HighHeapUsage
+        expr: |
+          sum(jvm_memory_used_bytes{job="ecommerce-app", area="heap"})
+            / sum(jvm_memory_max_bytes{job="ecommerce-app", area="heap"}) > 0.9
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "JVM heap gần đầy"
+          description: "Heap dùng > 90% trong 10 phút (hiện tại {{ $value | humanizePercentage }})."
+
+      - alert: DbConnectionPoolPending
+        expr: max(hikaricp_connections_pending{job="ecommerce-app"}) > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Có request đang chờ connection DB"
+          description: "Connection pool HikariCP bị cạn trong hơn 2 phút: có thể DB chậm hoặc pool quá nhỏ."
