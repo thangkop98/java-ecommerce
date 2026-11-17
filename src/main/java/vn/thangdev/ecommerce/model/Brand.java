@@ -54,4 +54,7 @@ public class Brand {
 
 	@OneToMany(mappedBy = "brand")
 	private List<Product> products;
+
+	@Column(name = "test_column")
+	private String test_column;
 }
