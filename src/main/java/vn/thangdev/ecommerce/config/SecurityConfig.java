@@ -1,5 +1,6 @@
 package vn.thangdev.ecommerce.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,10 +22,16 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 	private final CustomAuthenticationSuccessHandler successHandler;
 
+	// Port riêng của actuator (health, metrics). Không publish ra ngoài nên cho phép truy cập tự do,
+	// còn port web 8080 vẫn giữ nguyên rule bảo mật bên dưới.
+	@Value("${management.server.port:-1}")
+	private int managementPort;
+
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests((authorize) -> authorize
+						.requestMatchers(request -> request.getLocalPort() == managementPort).permitAll()
 						.requestMatchers("/", "/login", "/error", "/register", "/css/**", "/js/**", "/images/**",
 								"/uploads/**", "/cart/add", "/products", "/product/**")
 						.permitAll().requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated())
